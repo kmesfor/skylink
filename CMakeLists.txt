@@ -45,8 +45,8 @@ add_executable(Skylink
         src/backend/algorithms/Algorithm.h
         src/backend/AlgorithmComparator.cpp
         src/backend/AlgorithmComparator.h
-        src/frontend/main.cpp
-        src/frontend/main.h
+        src/frontend/frontend.cpp
+        src/frontend/frontend.h
 )
 
 # These tests can use the Catch2-provided main
