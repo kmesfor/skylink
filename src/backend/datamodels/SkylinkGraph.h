@@ -8,11 +8,14 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include "../resources/json.hpp"
+
 
 #include "Airport.h"
 #include "AirportRoute.h"
 
 using AirportCode = std::string;
+using json = nlohmann::json;
 
 struct SkylinkGraph {
 	/* This operates like an adjacency list, but formatted differently.
@@ -25,6 +28,17 @@ struct SkylinkGraph {
 
 	// Lookup map to convert an airport code to airport object
 	std::unordered_map<AirportCode, Airport> airport_lookup;
+
+	[[nodiscard]] std::string to_json() const {
+		json data;
+		data["airports"] = airports;
+
+		for (const auto& airport : airport_lookup) {
+			data["airport_lookup"][airport.first] = airport.second.to_json();
+		}
+
+		return data.dump();
+	}
 };
 
 #endif //SKYLINKGRAPH_H

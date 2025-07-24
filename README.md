@@ -17,3 +17,5 @@ Raw data information (internal documentation):
 
 Resource Links (update as used):
 * https://stackoverflow.com/questions/44990068/using-c-typedef-using-type-alias
+* https://github.com/nlohmann/json (download link: https://github.com/nlohmann/json/releases/tag/v3.12.0)
+* https://stackoverflow.com/questions/76489630/explanation-of-nodiscard-in-c17

@@ -6,10 +6,12 @@
 #define AIRPORTROUTE_H
 
 #include <string>
+#include "../resources/json.hpp"
 
 // https://stackoverflow.com/questions/44990068/using-c-typedef-using-type-alias
 // Safeguard to ensure developers know that airport codes are not arbitrary strings, but still are backed by std::string type
 using AirportCode = std::string;
+using json = nlohmann::json;
 
 struct AirportRoute {
 	AirportCode origin_code;
@@ -32,6 +34,20 @@ struct AirportRoute {
 	double calculate_weight() const {
 		//TODO: use some sort of algorithm/formula here
 		return 0;
+	}
+
+	// Convert the route data into JSON format to be saved
+	// [[nodiscard]] ensures that the output of this function is used, not just called
+	[[nodiscard]] json to_json() const {
+		json data;
+		data["origin_code"] = origin_code;
+		data["destination_code"] = destination_code;
+		data["scheduled_time"] = scheduled_time;
+		data["average_air_time"] = average_air_time;
+		data["average_delay"] = average_delay;
+		data["distance"] = distance;
+
+		return data;
 	}
 };
 
