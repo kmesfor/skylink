@@ -33,8 +33,6 @@ include_directories(src data)
 
 add_executable(Skylink
         src/main.cpp
-        src/backend/AirlineGraph.cpp
-        src/backend/AirlineGraph.h
         src/backend/algorithms/AStar.cpp
         src/backend/algorithms/AStar.h
         src/backend/algorithms/Dijkstra.cpp
@@ -47,6 +45,9 @@ add_executable(Skylink
         src/backend/AlgorithmComparator.h
         src/frontend/frontend.cpp
         src/frontend/frontend.h
+        src/backend/datamodels/Airport.h
+        src/backend/datamodels/AirportRoute.h
+        src/backend/datamodels/SkylinkGraph.h
 )
 
 # These tests can use the Catch2-provided main

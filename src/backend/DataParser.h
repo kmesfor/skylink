@@ -4,11 +4,18 @@
 
 #ifndef DATAPARSER_H
 #define DATAPARSER_H
-
+#include <string>
+#include "datamodels/SkylinkGraph.h"
 
 
 class DataParser {
+public:
+	SkylinkGraph graph;
 
+	DataParser(std::string filepath);
+
+private:
+	void loadFromFile(std::string filepath);
 };
 
 
