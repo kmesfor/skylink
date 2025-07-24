@@ -5,6 +5,8 @@ Resources:
 * Also using a lookup table to convert airport codes into location information
 
 Raw data information (internal documentation):
+* ORIGIN: Origin Airport
+* DEST: Destination Airport
 * ARR_DELAY: Difference in minutes between scheduled and actual arrival time. Early arrivals show negative numbers.
 * ARR_DELAY_NEW: Difference in minutes between scheduled and actual arrival time. Early arrivals set to 0.	
 * CANCELLED: Cancelled Flight Indicator (1=Yes, 0=No)
@@ -12,3 +14,6 @@ Raw data information (internal documentation):
 * ACTUAL_ELAPSED_TIME: Elapsed Time of Flight, in Minutes
 * AIR_TIME: Flight Time, in Minutes	
 * DISTANCE: Distance between airports (miles)
+
+Resource Links (update as used):
+* https://stackoverflow.com/questions/44990068/using-c-typedef-using-type-alias
