@@ -8,6 +8,7 @@ Kian
 * Help frontend + backend integration
 * Record video part
 * Write report sections: Extended and Refined Proposal and Analysis
+* README
 * Submit final deliverables (PDF, repo link)
 
 Nikhil
