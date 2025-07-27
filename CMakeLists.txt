@@ -29,7 +29,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SFML)
 
-include_directories(src data)
+include_directories(src dist/data)
 
 add_executable(Skylink
         src/main.cpp
