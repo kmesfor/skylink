@@ -5,6 +5,7 @@
 #ifndef AIRPORTROUTE_H
 #define AIRPORTROUTE_H
 
+#include <iostream>
 #include <string>
 #include "../resources/json.hpp"
 
@@ -14,6 +15,9 @@ using AirportCode = std::string;
 using json = nlohmann::json;
 
 struct AirportRoute {
+	// Ensure that only Airport can manage lifecycle (controlled through DataManager)
+	friend struct Airport;
+
 	AirportCode origin_code;
 	AirportCode destination_code;
 
@@ -22,6 +26,16 @@ struct AirportRoute {
 	double average_delay;
 	double distance; // miles
 
+private:
+	/**
+	 * Create an AirportRoute from origin_code to destination_code. Lifecycle should be managed by DataManager.
+	 * @param origin_code Origin airport code
+	 * @param destination_code Destination airport code
+	 * @param scheduled_time Scheduled amount of time for flight route (CRS_ELAPSED_TIME) (minutes)
+	 * @param average_air_time Average real airtime for flight route (minutes)
+	 * @param average_delay Average delay for flight route
+	 * @param distance Distance between airports (miles)
+	 */
 	AirportRoute(const AirportCode& origin_code, const AirportCode& destination_code, const double scheduled_time, const double average_air_time, const double average_delay, const double distance) {
 		this->origin_code = origin_code;
 		this->destination_code = destination_code;
@@ -31,13 +45,25 @@ struct AirportRoute {
 		this->distance = distance;
 	}
 
-	double calculate_weight() const {
+	/**
+	 * Destructor. Lifecycle should be managed by DataManager
+	 */
+	~AirportRoute() = default;
+public:
+	/**
+	 * Calculate the edge weight for this route
+	 * @return edge weight
+	 */
+	[[nodiscard]] double calculate_weight() const {
 		//TODO: use some sort of algorithm/formula here
 		return 0;
 	}
 
-	// Convert the route data into JSON format to be saved
 	// [[nodiscard]] ensures that the output of this function is used, not just called
+	/**
+	 * Convert route data into JSON format
+	 * @return nlohmann::json
+	 */
 	[[nodiscard]] json to_json() const {
 		json data;
 		data["origin_code"] = origin_code;
@@ -48,6 +74,24 @@ struct AirportRoute {
 		data["distance"] = distance;
 
 		return data;
+	}
+
+	/**
+	 * Create an AirportRoute object from JSON. Lifecycle should be managed by DataManager
+	 * @param data nlohmann::json data
+	 * @return AirportRoute object pointer
+	 */
+	static AirportRoute* from_json(const json& data) {
+		auto* route = new AirportRoute(
+			data.at("origin_code"),
+			data.at("destination_code"),
+			data.at("scheduled_time"),
+			data.at("average_air_time"),
+			data.at("average_delay"),
+			data.at("distance")
+		);
+
+		return route;
 	}
 };
 
