@@ -19,3 +19,10 @@ Resource Links (update as used):
 * https://stackoverflow.com/questions/44990068/using-c-typedef-using-type-alias
 * https://github.com/nlohmann/json (download link: https://github.com/nlohmann/json/releases/tag/v3.12.0)
 * https://stackoverflow.com/questions/76489630/explanation-of-nodiscard-in-c17
+* https://json.nlohmann.me/api/basic_json/
+* https://www.w3schools.com/cpp/cpp_exceptions.asp
+* https://en.cppreference.com/w/cpp/language/throw.html
+* https://stackoverflow.com/questions/71658440/c17-create-directories-automatically-given-a-file-path
+* https://www.geeksforgeeks.org/cpp/file-system-library-in-cpp-17/
+* https://stackoverflow.com/questions/2390912/checking-for-an-empty-file-in-c
+* https://www.geeksforgeeks.org/cpp/friend-class-function-cpp/
