@@ -4,9 +4,17 @@
 #include <iostream>
 #include <frontend/frontend.h>
 
+#include "backend/DataManager.h"
+#include "backend/datamodels/AirportRoute.h"
+#include "backend/datamodels/SkylinkGraph.h"
+
 int main() {
-	std::cout << "Hello World" << std::endl;
+	DataManager parser("./data/generated/graph2.json");
+	parser.save();
 
-	Frontend::display();
 
+	DataManager parser2("./data/generated/graph.json");
+
+	std::cout << parser2.graph->to_json();
+	// Frontend::display();
 }
