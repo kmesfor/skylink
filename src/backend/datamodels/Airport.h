@@ -24,6 +24,7 @@ struct Airport {
 
 	// Airport code, such as "BWI" or "IAD"
 	std::string code;
+	std::string name;
 	int in_degree = 0;
 	int out_degree = 0;
 
@@ -39,6 +40,7 @@ struct Airport {
 	[[nodiscard]] json to_json() const {
 		json data;
 		data["code"] = code;
+		data["name"] = name;
 		data["in"] = in_degree;
 		data["out"] = out_degree;
 		data["outgoing_routes"] = json::array();
@@ -61,6 +63,7 @@ private:
 		auto* airport = new Airport();
 		try {
 			airport->code = data.at("code").get<AirportCode>();
+			airport->name = data.at("name").get<std::string>();
 			airport->in_degree = data.at("in").get<int>();
 			airport->out_degree = data.at("out").get<int>();
 			for (const auto& route : data.at("outgoing_routes")) {
@@ -70,6 +73,7 @@ private:
 			std::cerr <<" WARNING: Airport data is malformed or empty, returning a blank template";
 			std::cerr << "Error Message: " << e.what() << std::endl;
 			airport->code = "";
+			airport->name = "";
 			airport->in_degree = 0;
 			airport->out_degree = 0;
 		}
