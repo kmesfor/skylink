@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.22)
 project(Skylink)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 # Output executables in /dist folder
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../dist)
@@ -61,6 +61,7 @@ add_executable(Tests
 
 add_executable(GenerateGraphFiles
         src/backend/graph-generator/GenerateGraphFiles.cpp
+        src/backend/DataManager.h
 )
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain) #link catch to test.cpp file
