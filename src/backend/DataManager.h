@@ -94,13 +94,8 @@ public:
 		// Initialize the file stream
 		std::ifstream file(path);
 
-		// If there is an issue opening / reading the file, throw an error
-		if (!file) {
-			throw std::runtime_error("DataManager#load(): failed to open file " + path);
-		}
-
 		// If the file is empty / newly created, return a blank SkylinkGraph
-		if (file.peek() == std::ifstream::traits_type::eof()) {
+		if (!file || file.peek() == std::ifstream::traits_type::eof()) {
 			graph = new SkylinkGraph();
 			return;
 		}
