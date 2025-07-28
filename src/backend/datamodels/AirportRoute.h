@@ -82,14 +82,22 @@ public:
 	 * @return AirportRoute object pointer
 	 */
 	static AirportRoute* from_json(const json& data) {
-		auto* route = new AirportRoute(
-			data.at("origin_code"),
-			data.at("destination_code"),
-			data.at("scheduled_time"),
-			data.at("average_air_time"),
-			data.at("average_delay"),
-			data.at("distance")
-		);
+		AirportRoute* route;
+		try {
+			// .get<type>() asserts types when grabbing from JSON
+			route = new AirportRoute(
+				data.at("origin_code").get<AirportCode>(),
+				data.at("destination_code").get<AirportCode>(),
+				data.at("scheduled_time").get<double>(),
+				data.at("average_air_time").get<double>(),
+				data.at("average_delay").get<double>(),
+				data.at("distance").get<double>()
+			);
+		} catch (const std::exception& e) {
+			std::cerr << "WARNING: Airport route data is malformed or empty, returning a blank template";
+			std::cerr << "Error Message: " << e.what() << std::endl;
+			route = new AirportRoute("", "", 0.0, 0.0, 0.0, 0.0);
+		}
 
 		return route;
 	}

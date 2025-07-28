@@ -47,11 +47,26 @@ private:
 	static SkylinkGraph* from_json(json data) {
 		// Initialize a new graph object (deleted from memory on save)
 		auto* graph = new SkylinkGraph();
-		graph->airports = data.at("airports");
+		if (data.contains("airports")) {
+			graph->airports = data.at("airports").get<std::vector<AirportCode>>();
+		} else {
+			graph->airports = {};
+			std::cerr << "WARNING: SkylinkGraph airports data is malformed or empty, returning a blank template" << std::endl;
+		}
 
-		for (const auto& airport_elem : data.at("airport_lookup")) {
-			auto* airport = Airport::from_json(airport_elem);
-			graph->airport_lookup[airport->code] = airport;
+		if (data.contains("airport_lookup")) {
+			try {
+				for (const auto& airport_elem : data.at("airport_lookup")) {
+					auto* airport = Airport::from_json(airport_elem);
+					graph->airport_lookup[airport->code] = airport;
+				}
+			} catch (const std::exception& e) {
+				std::cerr << "WARNING: SkylinkGraph airport_lookup data is malformed or empty" << std::endl;
+				std::cerr << "Error Message: " << e.what() << std::endl;
+			}
+		} else {
+			graph->airport_lookup = {};
+			std::cerr << "WARNING: airport_lookup is empty on SkylinkGraph" << std::endl;
 		}
 		return graph;
 	}
@@ -78,6 +93,7 @@ public:
 		json data;
 		data["airports"] = airports;
 
+		data["airport_lookup"] = json::object();
 		for (const auto& airport : airport_lookup) {
 			data["airport_lookup"][airport.first] = airport.second->to_json();
 		}

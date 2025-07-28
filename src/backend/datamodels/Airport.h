@@ -59,12 +59,21 @@ private:
 	 */
 	static Airport* from_json(const json& data) {
 		auto* airport = new Airport();
-		airport->code = data.at("code");
-		airport->in_degree = data.at("in");
-		airport->out_degree = data.at("out");
-		for (const auto& route : data.at("outgoing_routes")) {
-			airport->outgoing_routes.emplace_back(AirportRoute::from_json(route));
+		try {
+			airport->code = data.at("code").get<AirportCode>();
+			airport->in_degree = data.at("in").get<int>();
+			airport->out_degree = data.at("out").get<int>();
+			for (const auto& route : data.at("outgoing_routes")) {
+				airport->outgoing_routes.emplace_back(AirportRoute::from_json(route));
+			}
+		} catch (const std::exception& e) {
+			std::cerr <<" WARNING: Airport data is malformed or empty, returning a blank template";
+			std::cerr << "Error Message: " << e.what() << std::endl;
+			airport->code = "";
+			airport->in_degree = 0;
+			airport->out_degree = 0;
 		}
+
 		return airport;
 	}
 
