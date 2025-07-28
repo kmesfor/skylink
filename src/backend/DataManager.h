@@ -48,6 +48,14 @@ public:
 	}
 
 	/**
+	 * Clear the DataManger graph instance. Delete a graph's memory without saving to file. Reallocates a new graph object
+	 */
+	void clear() {
+		delete graph;
+		graph = new SkylinkGraph();
+	}
+
+	/**
 	 * Saves the currently stored SkylinkGraph from memory to JSON
 	 * @throws Runtime error if graph is not set
 	 * @throws Runtime error if file is not accessible

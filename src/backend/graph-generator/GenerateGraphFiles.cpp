@@ -13,7 +13,13 @@ const std::string GRAPH_FILEPATH = "./data/generated/skylinkgraph.json";
  * once a file is finalized for running the main program, they will not need to be changed.
  */
 int main() {
+	// Load graph from file
 	DataManager manager(GRAPH_FILEPATH);
+
+	// Clear graph's contents (start from a clean slate)
+	manager.clear();
+
+
 
 	std::cout << manager.graph->to_json();
 	manager.save();
