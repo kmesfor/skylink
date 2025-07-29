@@ -26,3 +26,5 @@ Resource Links (update as used):
 * https://www.geeksforgeeks.org/cpp/file-system-library-in-cpp-17/
 * https://stackoverflow.com/questions/2390912/checking-for-an-empty-file-in-c
 * https://www.geeksforgeeks.org/cpp/friend-class-function-cpp/
+* https://www.geeksforgeeks.org/cpp/csv-file-management-using-c/
+* https://stackoverflow.com/questions/5674374/remove-double-quotes-from-a-string-in-c

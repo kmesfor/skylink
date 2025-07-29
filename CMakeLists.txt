@@ -62,6 +62,7 @@ add_executable(Tests
 add_executable(GenerateGraphFiles
         src/backend/graph-generator/GenerateGraphFiles.cpp
         src/backend/DataManager.h
+        src/backend/graph-generator/LoadAirportCodes.h
 )
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain) #link catch to test.cpp file

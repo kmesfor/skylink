@@ -15,10 +15,16 @@
 using AirportCode = std::string;
 using json = nlohmann::json;
 
+// Forward declare SkylinkGraph for to make friend line work
+struct SkylinkGraph;
+
 /**
  * Class to represent an airport. i.e. "IAD". Holds information about outgoing routes and in degree and out degree
  */
 struct Airport {
+	// Allow airports to be instantiated by LoadAirportCodes function
+	friend inline void LoadAirportCodes(const std::string& path, SkylinkGraph* graph);
+
 	// Ensure only SkylinkGraph can manage lifecycle (controlled via DataManager)
 	friend struct SkylinkGraph;
 

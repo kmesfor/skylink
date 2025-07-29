@@ -3,9 +3,11 @@
 //
 #include <iostream>
 
+#include "LoadAirportCodes.h"
 #include "backend/DataManager.h"
 
 const std::string GRAPH_FILEPATH = "./data/generated/skylinkgraph.json";
+const std::string L_AIRPORT_FILEPATH = "./data/raw/L_AIRPORT.csv";
 
 /**
  * This is a part of a new executable named GenerateGraphFiles used to generate SkylinkGraph json files from
@@ -19,7 +21,7 @@ int main() {
 	// Clear graph's contents (start from a clean slate)
 	manager.clear();
 
-
+	LoadAirportCodes(L_AIRPORT_FILEPATH, manager.graph);
 
 	std::cout << manager.graph->to_json();
 	manager.save();
