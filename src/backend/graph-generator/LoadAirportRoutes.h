@@ -12,8 +12,9 @@
  * Load CSV data about airport routes. Fills in information on airports in SkylinkGraph. Expects T_ONTIME_REPORTING.csv file input
  * @param path Filepath of CSV file
  * @param graph Pointer to SkylinkGraph
+ * @param count Reference to an integer count of number of rows processed
  */
-inline void LoadAirportRoutes(const std::string& path, SkylinkGraph* graph) {
+inline void LoadAirportRoutes(const std::string& path, SkylinkGraph* graph, int& count) {
 
 	std::ifstream file(path);
 
@@ -30,6 +31,7 @@ inline void LoadAirportRoutes(const std::string& path, SkylinkGraph* graph) {
 
 	// Iterate each line
 	while (std::getline(file, line)) {
+		count++;
 		// Storage variables
 		std::string origin, destination, arr_delay, arr_delay_new_str, cancelled_str, crs_elapsed_time_str, actual_elapsed_time_str, air_time, distance_str;
 		double arr_delay_new, crs_elapsed_time, actual_elapsed_time, distance;

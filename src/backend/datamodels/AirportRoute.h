@@ -21,7 +21,7 @@ struct SkylinkGraph;
 
 struct AirportRoute {
 	//Allow airport routes to be instantiated by LoadAirportRoutes function
-	friend inline void LoadAirportRoutes(const std::string& path, SkylinkGraph* graph);
+	friend inline void LoadAirportRoutes(const std::string& path, SkylinkGraph* graph, int& count);
 
 	// Ensure that only Airport can manage lifecycle (controlled through DataManager)
 	friend struct Airport;
