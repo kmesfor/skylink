@@ -14,7 +14,7 @@
 /**
  * Load CSV data about airport codes and names. Populates airports and airport_lookup on SkylinkGraph. Expects L_AIRPORT.csv file input
  * @param path Filepath of CSV file
- * @param graph Reference to SkylinkGraph
+ * @param graph Pointer to SkylinkGraph
  */
 inline void LoadAirportCodes(const std::string& path, SkylinkGraph* graph) {
 	std::ifstream file(path);
