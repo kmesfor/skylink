@@ -6,4 +6,3 @@ cmake-build-debug
 
 # Do not commit build files. Instead, upload releases to github for major milestones
 dist/*
-!dist/data/
