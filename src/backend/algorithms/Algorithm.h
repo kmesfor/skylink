@@ -21,7 +21,7 @@ protected:
 	WeightType edge_weight_type;
 
 	// Stores the optimal path result of the algorithm
-	std::vector<AirportRoute* const> result_path = {};
+	std::vector<const AirportRoute*> result_path = {};
 
 	// Stores the elapsed time for executing the algorithm
 	std::chrono::duration<double> elapsed_time = std::chrono::duration<double>(0);
@@ -69,7 +69,7 @@ public:
 	 * Gets the result path
 	 * @return vector of airport routes in order
 	 */
-	[[nodiscard]] const std::vector<AirportRoute* const>& get_result_path() const {
+	[[nodiscard]] std::vector<const AirportRoute*> get_result_path() const {
 		return result_path;
 	}
 

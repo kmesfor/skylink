@@ -13,12 +13,16 @@ int main() {
 	DataManager parser("./data/generated/skylinkgraph.json");
 
 	Airport* start = parser.graph->airport_lookup["IAD"];
-	Airport* end = parser.graph->airport_lookup["OKC"];
+	Airport* end = parser.graph->airport_lookup["GNV"];
 
 	Dijkstra dijkstra(parser.graph, start, end, WeightType::DISTANCE);
 	dijkstra.execute();
 
-	std::cout << dijkstra.get_elapsed_time();
+	std::cout << dijkstra.get_elapsed_time() << std::endl;
 
+	auto res = dijkstra.get_result_path();
+	for (auto i : res) {
+		std::cout << i->origin_code << " -> " << i->destination_code << std::endl;
+	}
 	// Frontend::display();
 }
