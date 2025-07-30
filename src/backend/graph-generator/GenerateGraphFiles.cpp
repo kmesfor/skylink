@@ -4,10 +4,12 @@
 #include <iostream>
 
 #include "LoadAirportCodes.h"
+#include "LoadAirportRoutes.h"
 #include "backend/DataManager.h"
 
 const std::string GRAPH_FILEPATH = "./data/generated/skylinkgraph.json";
 const std::string L_AIRPORT_FILEPATH = "./data/raw/L_AIRPORT.csv";
+const std::string T_ONTIME_REPORTING_FILEPATH = "./data/raw/T_ONTIME_REPORTING.csv";
 
 /**
  * This is a part of a new executable named GenerateGraphFiles used to generate SkylinkGraph json files from
@@ -22,7 +24,8 @@ int main() {
 	manager.clear();
 
 	LoadAirportCodes(L_AIRPORT_FILEPATH, manager.graph);
+	LoadAirportRoutes(T_ONTIME_REPORTING_FILEPATH, manager.graph);
 
-	std::cout << manager.graph->to_json();
+	// std::cout << manager.graph->to_json();
 	manager.save();
 }
