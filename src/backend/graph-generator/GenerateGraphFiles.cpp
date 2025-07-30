@@ -3,6 +3,7 @@
 //
 #include <iostream>
 
+#include "DeleteDisconnectedRoutes.h"
 #include "LoadAirportCodes.h"
 #include "LoadAirportRoutes.h"
 #include "backend/DataManager.h"
@@ -23,8 +24,14 @@ int main() {
 	// Clear graph's contents (start from a clean slate)
 	manager.clear();
 
+	// Load airport codes (airports property)
 	LoadAirportCodes(L_AIRPORT_FILEPATH, manager.graph);
+
+	// Load airport objects (airport_lookup)
 	LoadAirportRoutes(T_ONTIME_REPORTING_FILEPATH, manager.graph);
+
+	// Delete any airport that has no incoming and no outgoing routes
+	DeleteDisconnectedRoutes(manager.graph);
 
 	// std::cout << manager.graph->to_json();
 	manager.save();

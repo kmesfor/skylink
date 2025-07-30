@@ -64,7 +64,7 @@ add_executable(GenerateGraphFiles
         src/backend/DataManager.h
         src/backend/graph-generator/LoadAirportCodes.h
         src/backend/graph-generator/LoadAirportRoutes.h
-        src/backend/graph-generator/DeleteDisconnectedAirports.cpp
+        src/backend/graph-generator/DeleteDisconnectedRoutes.h
 )
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain) #link catch to test.cpp file
