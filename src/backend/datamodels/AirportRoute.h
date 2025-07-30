@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <string>
+
+#include "WeightType.h"
 #include "../resources/json.hpp"
 
 // https://stackoverflow.com/questions/44990068/using-c-typedef-using-type-alias
@@ -67,7 +69,7 @@ public:
 	 * Calculate the edge weight for this route
 	 * @return edge weight
 	 */
-	[[nodiscard]] double calculate_weight() const {
+	[[nodiscard]] double calculate_weight(WeightType edge_weight_type) const {
 		//TODO: use some sort of algorithm/formula here
 		return 0;
 	}
