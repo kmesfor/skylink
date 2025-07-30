@@ -42,7 +42,7 @@ public:
 	 * @param end Ending airport pointer
 	 * @param edge_weight_type Specifies the type of calculation to use for edge weights
 	 */
-	explicit Algorithm(const SkylinkGraph* graph, const Airport* start, const Airport* end, const WeightType edge_weight_type) {
+	Algorithm(const SkylinkGraph* graph, const Airport* start, const Airport* end, const WeightType edge_weight_type) {
 		this->graph = graph;
 		this->start = start;
 		this->end = end;
