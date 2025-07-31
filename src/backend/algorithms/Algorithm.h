@@ -4,6 +4,7 @@
 
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
+#include "backend/datamodels/AlgorithmResult.h"
 #include "backend/datamodels/SkylinkGraph.h"
 
 /**
@@ -69,16 +70,17 @@ public:
 	 * Gets the result path
 	 * @return vector of airport routes in order
 	 */
-	[[nodiscard]] std::vector<const AirportRoute*> get_result_path() const {
-		return result_path;
-	}
+	[[nodiscard]] AlgorithmResult get_result() {
+		AlgorithmResult result;
 
-	/**
-	 * Gets the elapsed time of algorithm execution
-	 * @return double representing elapsed time
-	 */
-	[[nodiscard]] double get_elapsed_time() const {
-		return elapsed_time.count();
+		result.algorithm_name = get_algorithm_name();
+		result.start = start;
+		result.end = end;
+		result.edge_weight_type = edge_weight_type;
+		result.elapsed_time = elapsed_time;
+		for (auto route : result_path) {
+			result.results[route] = FlightRouteStatistics(route);
+		}
 	}
 
 
