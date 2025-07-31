@@ -33,12 +33,9 @@ include_directories(src dist/data)
 
 add_executable(Skylink
         src/main.cpp
-        src/backend/algorithms/AStar.cpp
         src/backend/algorithms/AStar.h
-        src/backend/algorithms/Dijkstra.cpp
         src/backend/algorithms/Dijkstra.h
         src/backend/DataManager.h
-        src/backend/algorithms/Algorithm.cpp
         src/backend/algorithms/Algorithm.h
         src/backend/AlgorithmComparator.cpp
         src/backend/AlgorithmComparator.h
@@ -66,6 +63,8 @@ add_executable(GenerateGraphFiles
         src/backend/graph-generator/LoadAirportRoutes.h
         src/backend/graph-generator/DeleteDisconnectedRoutes.h
         src/backend/datamodels/WeightType.h
+        src/backend/datamodels/AlgorithmResult.h
+        src/backend/datamodels/FlightRouteStatistics.h
 )
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain) #link catch to test.cpp file
