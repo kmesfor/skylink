@@ -21,16 +21,17 @@ protected:
 	// Determines if an algorithm should use path distance or consider average delay statistics for edge weights
 	WeightType edge_weight_type;
 
-	// Stores the optimal path result of the algorithm
-	std::vector<const AirportRoute*> result_path = {};
+	// Stores multiple potential paths for the algorithm's result, sorted from best to worst
+	std::vector<std::vector<const AirportRoute*>> result_paths = {};
 
 	// Stores the elapsed time for executing the algorithm
 	std::chrono::duration<double> elapsed_time = std::chrono::duration<double>(0);
 
 	/**
 	 * Runs the algorithm. Should not be called directly
+	 * @param n the number of results to populate (at most)
 	 */
-	virtual void run_algorithm() = 0;
+	virtual void run_algorithm(int n) = 0;
 
 public:
 	// Returns the algorithm name, useful for frontend
@@ -53,13 +54,14 @@ public:
 	/**
 	 * Externally facing execution method. #run() should not be directly called.
 	 * Times run() and saves duration to elapsed_time property
+	 * @param n the number of results to populate (at most). To get only the best path, use n=1
 	 */
-	void execute() {
+	void execute(int n) {
 		// Begin timer
 
 		const auto begin = std::chrono::high_resolution_clock::now();
 		// Execute algorithm
-		run_algorithm();
+		run_algorithm(n);
 
 		//End timer and update elapsed time
 		const auto end = std::chrono::high_resolution_clock::now();
@@ -67,22 +69,29 @@ public:
 	}
 
 	/**
-	 * Gets the result path
-	 * @return vector of airport routes in order
+	 * Gets the resulting paths
+	 * @return vector of AlgorithmResults in order from best to worst
 	 */
-	[[nodiscard]] AlgorithmResult get_result() {
-		AlgorithmResult result;
+	[[nodiscard]] std::vector<AlgorithmResult> get_results() {
+		std::vector<AlgorithmResult> results;
 
-		result.algorithm_name = get_algorithm_name();
-		result.start = start;
-		result.end = end;
-		result.edge_weight_type = edge_weight_type;
-		result.elapsed_time = elapsed_time;
-		for (auto route : result_path) {
-			result.results.push_back(std::make_pair(route, FlightRouteStatistics(route)));
+		// Iterate each of the results provided by the algorithm
+		for (auto route : result_paths) {
+			// For each result, create a new AlgorithmResult object
+			AlgorithmResult result;
+			result.algorithm_name = get_algorithm_name();
+			result.start = start;
+			result.end = end;
+			result.edge_weight_type = edge_weight_type;
+			result.elapsed_time = elapsed_time;
+			// For each step in the result, create a new FlightRouteStatistics object and push it to the AlgorithmResult object
+			for (auto step : route) {
+				result.results.push_back(std::make_pair(step, FlightRouteStatistics(step)));
+			}
+			results.push_back(result);
 		}
 
-		return result;
+		return results;
 	}
 
 

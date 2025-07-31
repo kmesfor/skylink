@@ -17,10 +17,15 @@ int main() {
 	Airport* end = parser.graph->airport_lookup["GNV"];
 
 	Dijkstra dijkstra(parser.graph, start, end, WeightType::DELAY);
-	dijkstra.execute();
+	dijkstra.execute(1);
 
-	AlgorithmResult res = dijkstra.get_result();
+	std::vector<AlgorithmResult> results = dijkstra.get_results();
 
-	res.print();
+	for (int i = 0; i < results.size(); i++) {
+		std::cout << "RESULT " << i+1 << ":" << std::endl;
+		std::cout << "----------------------------------" << std::endl;
+		results[i].print();
+		std::cout << "----------------------------------" << std::endl;
+	}
 	// Frontend::display();
 }

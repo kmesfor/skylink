@@ -6,18 +6,38 @@
 #define DIJKSTRA_H
 
 #include <queue>
+#include <set>
 
 #include "Algorithm.h"
 
 
 class Dijkstra final : public Algorithm {
-	void run_algorithm() override {
+	void run_algorithm(int n) override {
 		// Clear the previous results when re-calculating a solution
-		result_path.clear();
+		result_paths.clear();
 
 		// If the path is not a real path, return nothing (should be prevented by frontend)
 		if (end == start) return;
 
+		// Perform Dijkstra n times (if possible) and remove an edge from the graph each time to force a new (worse) combination
+		std::set<const AirportRoute*> removed_routes;
+		for (int i = 0; i < n; i++) {
+			perform_dijkstra(removed_routes);
+
+			// No new path added since the last iteration
+			if (result_paths.size() <= i) break;
+
+			const auto& last = result_paths.back();
+
+			// If the last path is empty, stop, no new results will be generated
+			if (last.empty()) break;
+
+			// Remove the last edge from the last generated path, forcing Dijkstra to take a new path next time
+			removed_routes.insert(last.back());
+		}
+	}
+
+	void perform_dijkstra(std::set<const AirportRoute*>& removed_routes) {
 		// Initialize a list of distances for each airport with an initial value of INT_MAX (infinity)
 		std::vector<double> dist(graph->airports.size(), INT_MAX);
 
@@ -54,6 +74,9 @@ class Dijkstra final : public Algorithm {
 
 			// Check each outgoing route for an airport
 			for (const auto& route : airport->outgoing_routes) {
+				// Skip a route if its already been used
+				if (removed_routes.count(route) == 1) continue;
+
 				// Index of destination airport in dist and prev vectors
 				int destination_index = airport_code_to_index[route->destination_code];
 
@@ -72,6 +95,7 @@ class Dijkstra final : public Algorithm {
 		// Reconstruct path
 		auto curr = end;
 		int curr_index = airport_code_to_index[curr->code];
+		std::vector<const AirportRoute*> path;
 
 		// Make sure path is possible
 		if (prev[curr_index] != nullptr) {
@@ -81,7 +105,7 @@ class Dijkstra final : public Algorithm {
 					break;
 				}
 				// Add route parts until start is reached
-				result_path.push_back(prev[curr_index]);
+				path.push_back(prev[curr_index]);
 				if (curr == start) {
 					break;
 				} else {
@@ -90,7 +114,10 @@ class Dijkstra final : public Algorithm {
 				}
 			}
 			// Reverse the list (built backwards)
-			std::reverse(result_path.begin(), result_path.end());
+			std::reverse(path.begin(), path.end());
+
+			// Add this iteration of Dijkstra's results to a list of results for the overall algorithm
+			result_paths.push_back(path);
 		}
 	}
 
