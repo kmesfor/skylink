@@ -16,6 +16,13 @@
 using AirportCode = std::string;
 using json = nlohmann::json;
 
+/* Configuration weights for calculating edge weights. Increasing will make the algorithm
+*  penalize a delay/cancellation more. Decreasing below 1 will value a cancellation/delay.
+*  Do not provide negative numbers
+*/
+inline double DELAY_PENALTY_WEIGHT = 1.0;
+inline double CANCELLATION_PENALTY_WEIGHT = 25.0;
+
 // Forward declare SkylinkGraph for to make friend line work
 struct SkylinkGraph;
 
@@ -70,8 +77,15 @@ public:
 	 * @return edge weight
 	 */
 	[[nodiscard]] double calculate_weight(WeightType edge_weight_type) const {
-		//TODO: use some sort of algorithm/formula here
-		return 0;
+		if (edge_weight_type == WeightType::DISTANCE) {
+			return distance;
+		} else {
+			double cancellation_rate = 0.0;
+			if (num_flights > 0) {
+				cancellation_rate = static_cast<double>(cancelled / num_flights);
+			}
+			return avg_time + (avg_delay * DELAY_PENALTY_WEIGHT) + (cancellation_rate * CANCELLATION_PENALTY_WEIGHT);
+		}
 	}
 
 	// [[nodiscard]] ensures that the output of this function is used, not just called

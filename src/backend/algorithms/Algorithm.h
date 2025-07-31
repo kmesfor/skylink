@@ -79,8 +79,10 @@ public:
 		result.edge_weight_type = edge_weight_type;
 		result.elapsed_time = elapsed_time;
 		for (auto route : result_path) {
-			result.results[route] = FlightRouteStatistics(route);
+			result.results.push_back(std::make_pair(route, FlightRouteStatistics(route)));
 		}
+
+		return result;
 	}
 
 

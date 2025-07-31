@@ -23,7 +23,7 @@ struct AlgorithmResult {
 	std::chrono::duration<double> elapsed_time;
 
 	// Result of algorithm. Ordered. Holds a route and its respective statistics
-	std::map<const AirportRoute*, FlightRouteStatistics> results;
+	std::vector<std::pair<const AirportRoute*, FlightRouteStatistics>> results;
 
 	// Compiles statistics for the overall journey. Some statistics (i.e. num_flights are not applicable)
 	FlightRouteStatistics get_overall_statistics() const {
@@ -41,6 +41,23 @@ struct AlgorithmResult {
 		result.cancellation_rate = cancellation_rate_sum / results.size();
 
 		return result;
+	}
+
+	void print() const {
+		std::cout << "Algorithm Result: " << algorithm_name << " (" << start->code << " -> " << end->code << ")" << std::endl;
+		std::cout << "Elapsed time: " << elapsed_time.count() << " seconds, Weight Type: "
+		<< (this->edge_weight_type == WeightType::DELAY ? "delay" : "distance") << std::endl;
+
+		std::cout << "Overall Results: ";
+		get_overall_statistics().print();
+
+		std::cout << std::endl << "Individual Path Results:" << std::endl;
+		for (auto route : results) {
+			std::cout << route.first->origin_code << " -> " << route.first->destination_code << std::endl;
+			route.second.print();
+			std::cout << std::endl;
+		}
+
 	}
 };
 
