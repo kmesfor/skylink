@@ -34,7 +34,7 @@ struct AlgorithmResult {
 		for (auto route : results) {
 			result.avg_scheduled_time += route.second.avg_scheduled_time;
 			result.avg_delay += route.second.avg_delay;
-			result.avg_time = route.second.avg_time;
+			result.avg_time += route.second.avg_time;
 			cancellation_rate_sum += route.second.cancellation_rate;
 		}
 
