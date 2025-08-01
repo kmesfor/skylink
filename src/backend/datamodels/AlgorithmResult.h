@@ -28,6 +28,8 @@ struct AlgorithmResult {
 	// Compiles statistics for the overall journey. Some statistics (i.e. num_flights are not applicable)
 	FlightRouteStatistics get_overall_statistics() const {
 		FlightRouteStatistics result;
+		result.from = results.front().first->origin_code;
+		result.to = results.back().first->destination_code;
 
 		// Calculate accumlated statistics for each leg of the journey
 		double cancellation_rate_sum = 0.0;

@@ -51,13 +51,13 @@ void GraphVisualization::draw_graph_components() {
 	for (int i = 0 ; i < results.size(); i++) {
 		for (int j = 0; j < results[i].results.size(); j++) {
 			if (j > 0) { // dont draw line on first vertex
-				draw_line(vertices[vertex_index - 1].first, vertices[vertex_index].first);
+				draw_line(std::get<0>(vertices[vertex_index - 1]), std::get<0>(vertices[vertex_index]));
 			}
 			vertex_index++;
 
 			if (j == results[i].results.size() - 1) {
 				// connect last vertices
-				draw_line(vertices[vertex_index - 1].first, vertices[vertex_index].first);
+				draw_line(std::get<0>(vertices[vertex_index - 1]), std::get<0>(vertices[vertex_index]));
 				vertex_index++;
 			}
 		}
@@ -67,12 +67,12 @@ void GraphVisualization::draw_graph_components() {
 	vertex_index = 0;
 	for (int i = 0 ; i < results.size(); i++) {
 		for (int j = 0; j < results[i].results.size(); j++) {
-			draw_vertex(results[i].results[j].first->origin_code, vertices[vertex_index].first, vertices[vertex_index].second, clicked_vertex_index == vertex_index);
+			draw_vertex(results[i].results[j].first->origin_code, std::get<0>(vertices[vertex_index]), std::get<1>(vertices[vertex_index]), clicked_vertex_index == vertex_index);
 			vertex_index++;
 
 			// Last vertex
 			if (j == results[i].results.size() - 1) {
-				draw_vertex(results[i].results[j].first->destination_code, vertices[vertex_index].first, vertices[vertex_index].second, clicked_vertex_index == vertex_index);
+				draw_vertex(results[i].results[j].first->destination_code, std::get<0>(vertices[vertex_index]), std::get<1>(vertices[vertex_index]), clicked_vertex_index == vertex_index);
 				vertex_index++;
 			}
 		}
@@ -106,7 +106,7 @@ void GraphVisualization::draw_static_components(sf::RenderWindow& window, sf::Ve
 	instructions.setFillColor(INSTRUCTION_COLOR);
 	// Make INSTRUCTION_TEXT_X and INSTRUCTION_TEXT_Y be relative to the graph's position on the window
 	instructions.setPosition({position.x + INSTRUCTION_TEXT_X, position.y + INSTRUCTION_TEXT_Y});
-	instructions.setString("Use arrow keys to scroll graph!");
+	instructions.setString("Use arrow keys to scroll graph! Click airports for more info");
 	window.draw(instructions);
 
 	if (clicked_vertex_index != -1) {
@@ -154,36 +154,48 @@ void GraphVisualization::load_vertex_positions() {
 		float y = START_Y + (i * Y_OFFSET);
 		for (int j = 0; j < results[i].results.size(); j++) {
 			float x = START_X + (j * X_OFFSET);
-			vertices.push_back({{x, y}, results[i].results[j].second});
-
+				vertices.emplace_back(sf::Vector2f{x, y}, results[i].results[j].second, &results[i]);
 			if (j == results[i].results.size() - 1) {
-				vertices.push_back({{x + X_OFFSET, y}, results[i].results[j].second});
+				vertices.emplace_back(sf::Vector2f{x + X_OFFSET, y}, results[i].results[j].second, &results[i]);
 			}
 		}
 	}
 }
 
 void GraphVisualization::draw_result_info(sf::RenderWindow& window, sf::Vector2f position) const {
-	if (clicked_vertex_index < 0 || clicked_vertex_index >= vertices.size()) return;
+	auto result = std::get<2>(vertices[clicked_vertex_index]);
 
-	FlightRouteStatistics data = vertices[clicked_vertex_index].second;
+	sf::Text overall_info(font);
+	auto overall_stats = result->get_overall_statistics();
+	overall_info.setFont(font);
 
-	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(2);
-	oss << "Flight Info\n\n";
-	oss << "From: " << data.from << "\n";
-	oss << "To: " << data.to << "\n";
-	oss << "Cancellation: " << data.cancellation_rate << "%\n";
-	oss << "Avg Scheduled Time: " << data.avg_scheduled_time << "\n";
-	oss << "Avg Delay: " << data.avg_delay << "\n";
-	oss << "Avg Real Time: " << data.avg_time << "\n";
-	oss << "Flights: " << data.num_flights << "\n";
+	std::ostringstream str;
+	str << std::fixed << std::setprecision(5);
+	str << "Summary: " << result->start->code << " to " << result->end->code << "\n\n";
+	str << "Algorithm: " << result->algorithm_name << " (" << result->elapsed_time.count() << " seconds)\n";
+	str << std::fixed << std::setprecision(2);
+	str << "Weight Type: " << (result->edge_weight_type == WeightType::DELAY ? "delay" : "distance") << "\n";
+	str << "Connections: " << result->results.size() << "\n\n";
+	str << "Cancellation: " << overall_stats.cancellation_rate << "%\n";
+	str << "Average Scheduled Time: " << overall_stats.avg_scheduled_time << " mins" << "\n";
+	str << "Average Delay: " << overall_stats.avg_delay << " mins" << "\n";
+	str << "Average Total Time: " << overall_stats.avg_time << " mins" << "\n";
+
+	overall_info.setString(str.str());
+
+
+	overall_info.setCharacterSize(STATS_SUMMARY_FONT_SIZE);
+	overall_info.setFillColor(STATS_SUMMARY_COLOR);
+	overall_info.setPosition({position.x + STATS_X, position.y + STATS_Y});
+	window.draw(overall_info);
+
+	FlightRouteStatistics connection = std::get<1>(vertices[clicked_vertex_index]);
 
 	sf::Text info(font);
 	info.setFont(font);
-	info.setString(oss.str());
-	info.setCharacterSize(16);
-	info.setFillColor(sf::Color::White);
-	info.setPosition({position.x + STATS_X, position.y + STATS_Y});
+	info.setString("\n" + connection.to_string());
+	info.setCharacterSize(STATS_SUMMARY_FONT_SIZE);
+	info.setFillColor(STATS_CONNECTION_COLOR);
+	info.setPosition({position.x + STATS_X + STATS_WIDTH / 2, position.y + STATS_Y});
 	window.draw(info);
 }

@@ -22,7 +22,7 @@ using namespace VisualizationConfig;
  * Has a #draw() function to draw onto a render window.
  */
 class GraphVisualization {
-	std::vector<std::pair<sf::Vector2f, FlightRouteStatistics>> vertices; // Position and algorithm data for each vertex to be used by the click handler
+	std::vector<std::tuple<sf::Vector2f, FlightRouteStatistics, const AlgorithmResult*>> vertices; // Position and algorithm data for each vertex to be used by the click handler
 	sf::View scrolled_view; // Scrolled view to be used by click handler
 	int clicked_vertex_index = -1;	// Index of vertex actively being highlighted, -1 if none
 
@@ -87,8 +87,8 @@ public:
 		view = sf::View(sf::FloatRect({0, 0}, {WIDTH, HEIGHT}));
 
 		// Load the font used for text labels
-		if (!font.openFromFile("arial.ttf")) { // Stored in dist/
-			std::cerr << "Failed to load font arial.ttf" << std::endl;
+		if (!font.openFromFile("JetBrainsMono-Regular.ttf")) { // Stored in dist/
+			std::cerr << "Failed to load font JetBrainsMono-Regular.ttf" << std::endl;
 			return;
 		}
 
@@ -135,8 +135,8 @@ public:
 
 		for (int i = 0; i < vertices.size(); i++) {
 			// Use distance formula to see if click is within radius of vertex
-			const float d_x = click.x - vertices[i].first.x;
-			const float d_y = click.y - vertices[i].first.y;
+			const float d_x = click.x - std::get<0>(vertices[i]).x;
+			const float d_y = click.y - std::get<0>(vertices[i]).y;
 			const float distance = std::sqrt((d_x * d_x) + (d_y * d_y));
 			if (distance <= VERTEX_RADIUS) {
 				if (clicked_vertex_index == i) {

@@ -46,9 +46,12 @@ struct FlightRouteStatistics {
 	std::string to_string() const {
 		std::ostringstream oss;
 		oss << std::fixed << std::setprecision(2);
-		oss << "Cancellation rate: " << this->cancellation_rate << "%, Avg Scheduled Time: "
-			<< this->avg_scheduled_time << ", Avg Delay: " << this->avg_delay
-			<< ", Avg Time: " << this->avg_time << ", Num flights: " << this->num_flights;
+		oss << "\nConnection from " << from << " to " << to << "\n\n";
+		oss << "Cancellation: " << cancellation_rate << "%\n";
+		oss << "Average Scheduled Time: " << avg_scheduled_time << " mins\n";
+		oss << "Average Delay: " << avg_delay << " mins\n";
+		oss << "Average Total Time: " << avg_time << " mins\n";
+		oss << num_flights << " flights flown";
 
 		return oss.str();
 	}
