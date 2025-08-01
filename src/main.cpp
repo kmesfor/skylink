@@ -17,7 +17,7 @@ int main() {
 	Airport* end = parser.graph->airport_lookup["GNV"];
 
 	Dijkstra dijkstra(parser.graph, start, end, WeightType::DELAY);
-	dijkstra.execute(5);
+	dijkstra.execute(20);
 
 	std::vector<AlgorithmResult> results = dijkstra.get_results();
 

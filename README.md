@@ -36,3 +36,5 @@ Resource Links (update as used):
 * https://stackoverflow.com/questions/34458791/making-custom-types-drawable-with-sfml
 * https://www.sfml-dev.org/documentation/3.0.0/classsf_1_1RenderTexture.html
 * https://stackoverflow.com/questions/42228164/how-to-color-a-line-in-sfml
+* https://stackoverflow.com/questions/16091616/c-sfml-drawing-scrollable-content-within-a-defined-rectangle
+* https://www.sfml-dev.org/documentation/2.4.0-fr/classsf_1_1View.php

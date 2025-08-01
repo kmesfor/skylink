@@ -20,6 +20,8 @@ constexpr float VERTEX_TEXT_Y_OFFSET = 10.0; //px below vertex that label should
 constexpr sf::Color LINE_COLOR = sf::Color::Black; // line color between vertices
 constexpr sf::Color VERTEX_COLOR = sf::Color::Red;
 constexpr int LABEL_FONT_SIZE = 12;
+constexpr float BOX_THICKNESS = 2.0; // line thickness in px
+constexpr sf::Color BOX_COLOR = sf::Color::Black;
 
 /**
  * Visualization of the graph created on a RenderTexture to allow it to be a component like a "div" in HTML.
@@ -79,6 +81,8 @@ public:
 	// Store the texture that the graph will be drawn on
 	RenderTexture graph;
 
+	// Use an SFML view to create scrollable content
+	sf::View view;
 
 	/**
 	 * Creates the graph ready to be rendered. Draws a graphical representation of airport results
@@ -86,6 +90,9 @@ public:
 	GraphVisualization(const std::vector<AlgorithmResult>& results) {
 		// Create a new RenderTexture to draw components on
 		graph = sf::RenderTexture({WIDTH, HEIGHT});
+
+		// Initialize the view starting at 0, 0
+		view = sf::View(sf::FloatRect({0, 0}, {WIDTH, HEIGHT}));
 
 		// Load the font used for text labels
 		sf::Font font;
@@ -142,8 +149,47 @@ public:
 		// Set the position
 		sprite.setPosition(position);
 
-		// Render onto window
+		// Store the previous view, basically scroll_view is used to draw the GraphVisualization sprite on an "altered" coordinate plane,
+		// then setting the window's view back to previous_view restores the coordinate plane back to normal
+		sf::View prev_view = window.getView();
+		sf::View scroll_view = view;
+
+		// Set the scrolled view values as a value between 0 and 1 relative to the main view
+		scroll_view.setViewport(sf::FloatRect(
+			{position.x / window.getSize().x,
+			position.y / window.getSize().y},
+			{static_cast<float>(WIDTH) / window.getSize().x,
+			static_cast<float>(HEIGHT) / window.getSize().y}
+		));
+
+		// Create a visual box to show where the graph's contents scrollable region is
+		sf::RectangleShape box;
+		box.setSize(sf::Vector2f(WIDTH, HEIGHT));
+		box.setPosition(position);
+		box.setOutlineColor(BOX_COLOR);
+		box.setOutlineThickness(BOX_THICKNESS);
+
+		// Draw the box
+		window.draw(box);
+
+		// Activate the altered coordinate plane
+		window.setView(scroll_view);
+
+		// Render sprite onto window on the altered coordinate plane
 		window.draw(sprite);
+
+		// Restore regular coordinate plane
+		window.setView(prev_view);
+	}
+
+	/**
+	 * Alter the view by a Vector2f (x and y coordinates)
+	 * @param change Vector of coordinates to change by (i.e. -1, -1)
+	 */
+	void scroll(const sf::Vector2f& change) {
+		sf::Vector2f center = view.getCenter();
+		center += change;
+		view.setCenter(center);
 	}
 };
 
