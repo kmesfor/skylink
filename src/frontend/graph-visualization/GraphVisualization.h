@@ -20,8 +20,13 @@ constexpr float VERTEX_TEXT_Y_OFFSET = 10.0; //px below vertex that label should
 constexpr sf::Color LINE_COLOR = sf::Color::Black; // line color between vertices
 constexpr sf::Color VERTEX_COLOR = sf::Color::Red;
 constexpr int LABEL_FONT_SIZE = 12;
+constexpr sf::Color LABEL_COLOR = sf::Color::Green;
 constexpr float BOX_THICKNESS = 2.0; // line thickness in px
 constexpr sf::Color BOX_COLOR = sf::Color::Black;
+constexpr int INSTRUCTION_FONT_SIZE = 12;
+constexpr sf::Color INSTRUCTION_COLOR = sf::Color::Black;
+constexpr float INSTRUCTION_TEXT_X = 100;
+constexpr float INSTRUCTION_TEXT_Y = 0;
 
 /**
  * Visualization of the graph created on a RenderTexture to allow it to be a component like a "div" in HTML.
@@ -49,7 +54,7 @@ class GraphVisualization final : sf::RenderTexture {
 		sf::Text label(font);
 		label.setString(code);
 		label.setCharacterSize(LABEL_FONT_SIZE);
-		label.setFillColor(sf::Color::Black);
+		label.setFillColor(LABEL_COLOR);
 
 		// Set the origin position of the label to the center of the text box
 		label.setOrigin(label.getLocalBounds().getCenter());
@@ -100,6 +105,16 @@ public:
 			std::cerr << "Failed to load font arial.ttf" << std::endl;
 			return;
 		}
+
+		// Add instructions for using scroll feature
+		sf::Text instructions(font);
+		instructions.setCharacterSize(INSTRUCTION_FONT_SIZE);
+		instructions.setFillColor(INSTRUCTION_COLOR);
+		instructions.setPosition({INSTRUCTION_TEXT_X, INSTRUCTION_TEXT_Y});
+		instructions.setString("Use arrow keys to scroll graph!");
+
+		graph.draw(instructions);
+
 
 		// Iterate each result, draw lines first so they appear below vertices
 		for (int i = 0 ; i < results.size(); i++) {
