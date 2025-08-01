@@ -5,21 +5,17 @@
 #include "frontend.h"
 
 #include <SFML/Graphics.hpp>
+#include <vector>
+#include <iostream>
 
-void Frontend::display() {
-	sf::VideoMode videoMode;
-	videoMode.size = sf::Vector2u(500, 500);
+#include "backend/datamodels/AlgorithmResult.h"
+#include "window/TestWindow.h"
+#include "window/WindowManager.h"
 
-	sf::RenderWindow window(videoMode, "SFML Test");
+void Frontend::display(std::vector<AlgorithmResult>& allResults, SkylinkGraph* graph) {
+    WindowManager wm;
+    TestWindow test_window(&allResults);
+    wm.add_window(test_window);
 
-	while (window.isOpen()) {
-		while (const std::optional event = window.pollEvent()) {
-			if (event->is<sf::Event::Closed>()) {
-				window.close();
-			}
-		}
-
-		window.clear(sf::Color::Blue);
-		window.display();
-	}
+    wm.render_window(WindowNames::MAIN);
 }

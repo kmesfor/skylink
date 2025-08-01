@@ -4,10 +4,13 @@
 
 #ifndef FRONTEND_H
 #define FRONTEND_H
+#include <vector>
+#include "backend/datamodels/AlgorithmResult.h"
+#include "SFML/Graphics/RenderWindow.hpp"
 
 class Frontend {
 public:
-	static void display();
+	static void display(std::vector<AlgorithmResult>& results, SkylinkGraph* graph);
 };
 
 
