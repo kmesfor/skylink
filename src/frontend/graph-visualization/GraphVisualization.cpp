@@ -6,12 +6,12 @@
 
 #include "SFML/Graphics/CircleShape.hpp"
 
-void GraphVisualization:: draw_vertex(const std::string& code, float x_pos, float y_pos, const AlgorithmResult& result, const bool clicked) {
+void GraphVisualization:: draw_vertex(const std::string& code, const sf::Vector2f pos, const AlgorithmResult& result, const bool clicked) {
 	// Create the circle object and fill in necessary values
 	sf::CircleShape point(VERTEX_RADIUS);
 	point.setFillColor(clicked ? VERTEX_SELECTED_COLOR : VERTEX_COLOR);
 	point.setOrigin({VERTEX_RADIUS, VERTEX_RADIUS});
-	point.setPosition({x_pos, y_pos});
+	point.setPosition(pos);
 
 	// Draw on the graph
 	graph.draw(point);
@@ -26,11 +26,10 @@ void GraphVisualization:: draw_vertex(const std::string& code, float x_pos, floa
 	label.setOrigin(label.getLocalBounds().getCenter());
 
 	// Set position below the circle depending on offsets
-	label.setPosition({x_pos, y_pos + VERTEX_RADIUS + VERTEX_TEXT_Y_OFFSET});
+	label.setPosition({pos.x, pos.y + VERTEX_RADIUS + VERTEX_TEXT_Y_OFFSET});
 
 	// Draw to graph
 	graph.draw(label);
-	vertices.push_back({{x_pos, y_pos}, result});
 }
 
 void GraphVisualization::draw_line(const sf::Vector2f& start, const sf::Vector2f& end) {
@@ -45,44 +44,42 @@ void GraphVisualization::draw_line(const sf::Vector2f& start, const sf::Vector2f
 	graph.draw(line, 2, sf::PrimitiveType::Lines);
 }
 
-void GraphVisualization::drawGraphComponents() {
-	// Iterate each result, draw lines first so they appear below vertices
+void GraphVisualization::draw_graph_components() {
+	// Draw lines in order, skipping line drawing on the first vertex of a row
+	// and drawing lines between the previous vertex and the current
+	int vertex_index = 0;
 	for (int i = 0 ; i < results.size(); i++) {
-		// Starting at START_Y, move down by Y_OFFSET for every new result set
-		float y = START_Y + (i * Y_OFFSET);
-		// Iterate each route in the result
 		for (int j = 0; j < results[i].results.size(); j++) {
-			// Starting at START_X, move rightwards by X_OFFSET for each new route in the result
-			float x = START_X + j * X_OFFSET;
-			// If not the last vertex, draw the line
-			if (j < results[i].results.size()) {
-				draw_line({x, y}, {x + X_OFFSET, y});
+			if (j > 0) { // dont draw line on first vertex
+				draw_line(vertices[vertex_index - 1].first, vertices[vertex_index].first);
 			}
+			vertex_index++;
 
+			if (j == results[i].results.size() - 1) {
+				// connect last vertices
+				draw_line(vertices[vertex_index - 1].first, vertices[vertex_index].first);
+				vertex_index++;
+			}
 		}
 	}
 
-	// Iterate each result, draw vertices second so they appear above vertices
-	int vertex_index = 0;
-	for (int i = 0; i < results.size(); i++) {
-		float y = START_Y + (i * Y_OFFSET);
+	// Draw vertices afterward so they appear overtop of lines
+	vertex_index = 0;
+	for (int i = 0 ; i < results.size(); i++) {
 		for (int j = 0; j < results[i].results.size(); j++) {
-			float x = START_X + (j * X_OFFSET);
-			// Draw the origin vertex
-			draw_vertex(results[i].results[j].first->origin_code, x, y, results[i], clicked_vertex_index == vertex_index);
+			draw_vertex(results[i].results[j].first->origin_code, vertices[vertex_index].first, vertices[vertex_index].second, clicked_vertex_index == vertex_index);
 			vertex_index++;
 
-			// On the last flight, also draw the destination vertex to ensure all vertices are drawn
+			// Last vertex
 			if (j == results[i].results.size() - 1) {
-				// Increment x position forward, then draw
-				draw_vertex(results[i].results[j].first->destination_code, START_X + (j+1) * X_OFFSET, y, results[i], clicked_vertex_index == vertex_index);
+				draw_vertex(results[i].results[j].first->destination_code, vertices[vertex_index].first, vertices[vertex_index].second, clicked_vertex_index == vertex_index);
 				vertex_index++;
 			}
 		}
 	}
 }
 
-void GraphVisualization::drawStaticComponents(sf::RenderWindow& window, sf::Vector2f position) {
+void GraphVisualization::draw_static_components(sf::RenderWindow& window, sf::Vector2f position) const {
 	// Create a visual box to show where the graph's contents scrollable region is
 	sf::RectangleShape box;
 	box.setSize(sf::Vector2f(WIDTH, HEIGHT));
@@ -113,7 +110,7 @@ void GraphVisualization::drawStaticComponents(sf::RenderWindow& window, sf::Vect
 	window.draw(instructions);
 }
 
-void GraphVisualization::drawGraphSprite(sf::RenderWindow& window, sf::Vector2f position) {
+void GraphVisualization::draw_graph_sprite(sf::RenderWindow& window, sf::Vector2f position) {
 	// First, render the components on the graph
 	graph.display();
 
@@ -145,4 +142,18 @@ void GraphVisualization::drawGraphSprite(sf::RenderWindow& window, sf::Vector2f 
 
 	// Restore regular coordinate plane
 	window.setView(prev_view);
+}
+
+void GraphVisualization::load_vertex_positions() {
+	for (int i = 0; i < results.size(); i++) {
+		float y = START_Y + (i * Y_OFFSET);
+		for (int j = 0; j < results[i].results.size(); j++) {
+			float x = START_X + (j * X_OFFSET);
+			vertices.push_back({{x, y}, results[i]});
+
+			if (j == results[i].results.size() - 1) {
+				vertices.push_back({{x + X_OFFSET, y}, results[i]});
+			}
+		}
+	}
 }

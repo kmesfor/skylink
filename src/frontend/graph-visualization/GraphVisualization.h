@@ -29,12 +29,11 @@ class GraphVisualization {
 	/**
 	 * Function to draw an airport vertex on the graph visualization
 	 * @param code airport code
-	 * @param x_pos x position of vertex
-	 * @param y_pos y position of vertex
+	 * @param pos position of vertex
 	 * @param result AlgorithmResult of the entire set of vertices
 	 * @param clicked T/F state if the vertex is clicked
 	 */
-	void draw_vertex(const std::string& code, float x_pos, float y_pos, const AlgorithmResult& result, bool clicked);
+	void draw_vertex(const std::string& code, const sf::Vector2f pos, const AlgorithmResult& result, bool clicked);
 
 	/**
 	 * Draw a connecting line from x_1_pos, y_1_pos to x_2_pos, y_2_pos
@@ -46,17 +45,19 @@ class GraphVisualization {
 	/**
 	 * Draw dynamic graph components such as vertices and lines that appear UNDER the static components
 	 */
-	void drawGraphComponents();
+	void draw_graph_components();
 
 	/**
 	 * Draw static components that appear over the dynamic components (instructions, results)
 	 */
-	void drawStaticComponents(sf::RenderWindow& window, sf::Vector2f position);
+	void draw_static_components(sf::RenderWindow& window, sf::Vector2f position) const;
 
 	/**
 	 * Handles setting view, creating graph sprite, and rendering scrollable content
 	 */
-	void drawGraphSprite(sf::RenderWindow& window, sf::Vector2f position);
+	void draw_graph_sprite(sf::RenderWindow& window, sf::Vector2f position);
+
+	void load_vertex_positions();
 
 public:
 	sf::RenderTexture graph; // Store the texture that the graph will be drawn on
@@ -80,6 +81,8 @@ public:
 			std::cerr << "Failed to load font arial.ttf" << std::endl;
 			return;
 		}
+
+		load_vertex_positions();
 	}
 
 	/**
@@ -88,14 +91,17 @@ public:
 	 * @param position coordinates to draw at
 	 */
 	void draw(sf::RenderWindow& window, sf::Vector2f position) {
+		// Clean up
 		graph.clear(sf::Color::Transparent);
-		vertices.clear();
 
-		drawGraphComponents();
+		// Draw dynamic components
+		draw_graph_components();
 
-		drawGraphSprite(window, position);
+		// Draw scrollable content
+		draw_graph_sprite(window, position);
 
-		drawStaticComponents(window, position);
+		// Draw fixed components
+		draw_static_components(window, position);
 	}
 
 	/**
