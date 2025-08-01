@@ -57,7 +57,6 @@ struct AlgorithmResult {
 			route.second.print();
 			std::cout << std::endl;
 		}
-
 	}
 };
 

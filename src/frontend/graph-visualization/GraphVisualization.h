@@ -22,7 +22,7 @@ using namespace VisualizationConfig;
  * Has a #draw() function to draw onto a render window.
  */
 class GraphVisualization {
-	std::vector<std::pair<sf::Vector2f, AlgorithmResult>> vertices; // Position and algorithm data for each vertex to be used by the click handler
+	std::vector<std::pair<sf::Vector2f, FlightRouteStatistics>> vertices; // Position and algorithm data for each vertex to be used by the click handler
 	sf::View scrolled_view; // Scrolled view to be used by click handler
 	int clicked_vertex_index = -1;	// Index of vertex actively being highlighted, -1 if none
 
@@ -33,7 +33,7 @@ class GraphVisualization {
 	 * @param result AlgorithmResult of the entire set of vertices
 	 * @param clicked T/F state if the vertex is clicked
 	 */
-	void draw_vertex(const std::string& code, const sf::Vector2f pos, const AlgorithmResult& result, bool clicked);
+	void draw_vertex(const std::string& code, const sf::Vector2f pos, const FlightRouteStatistics& result, bool clicked);
 
 	/**
 	 * Draw a connecting line from x_1_pos, y_1_pos to x_2_pos, y_2_pos
@@ -57,14 +57,24 @@ class GraphVisualization {
 	 */
 	void draw_graph_sprite(sf::RenderWindow& window, sf::Vector2f position);
 
+	/**
+	 * Loads vertex positions for the graph to be easily re-accessed.
+	 */
 	void load_vertex_positions();
+
+	/**
+	 * Draw AlgorithmResult information to screen for the currently selected vertex
+	 * @param result The AlgorithmResult to display
+	 * @param window the window to draw on
+	 * @param position window position
+	 */
+	void draw_result_info(sf::RenderWindow& window, sf::Vector2f position) const;
 
 public:
 	sf::RenderTexture graph; // Store the texture that the graph will be drawn on
 	sf::View view; // Use an SFML view to create scrollable content
 	sf::Font font; // Store font used throughout graph
 	const std::vector<AlgorithmResult>& results; // Results of algorithm execution
-
 
 	/**
 	 * Creates the graph ready to be rendered. Draws a graphical representation of airport results
@@ -92,6 +102,7 @@ public:
 	 */
 	void draw(sf::RenderWindow& window, sf::Vector2f position) {
 		// Clean up
+		graph.setView(view);
 		graph.clear(sf::Color::Transparent);
 
 		// Draw dynamic components

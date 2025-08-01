@@ -6,7 +6,7 @@
 
 #include "SFML/Graphics/CircleShape.hpp"
 
-void GraphVisualization:: draw_vertex(const std::string& code, const sf::Vector2f pos, const AlgorithmResult& result, const bool clicked) {
+void GraphVisualization:: draw_vertex(const std::string& code, const sf::Vector2f pos, const FlightRouteStatistics& result, const bool clicked) {
 	// Create the circle object and fill in necessary values
 	sf::CircleShape point(VERTEX_RADIUS);
 	point.setFillColor(clicked ? VERTEX_SELECTED_COLOR : VERTEX_COLOR);
@@ -108,6 +108,10 @@ void GraphVisualization::draw_static_components(sf::RenderWindow& window, sf::Ve
 	instructions.setPosition({position.x + INSTRUCTION_TEXT_X, position.y + INSTRUCTION_TEXT_Y});
 	instructions.setString("Use arrow keys to scroll graph!");
 	window.draw(instructions);
+
+	if (clicked_vertex_index != -1) {
+		draw_result_info(window, position);
+	}
 }
 
 void GraphVisualization::draw_graph_sprite(sf::RenderWindow& window, sf::Vector2f position) {
@@ -137,7 +141,8 @@ void GraphVisualization::draw_graph_sprite(sf::RenderWindow& window, sf::Vector2
 
 	// Activate the altered coordinate plane and render sprite onto window
 	// Do this step above other components to make the graph appear below the graph's 'UI' (stats / instructions)
-	window.setView(scroll_view);
+	window.setView(window.getDefaultView());
+	sprite.setPosition(position);
 	window.draw(sprite);
 
 	// Restore regular coordinate plane
@@ -149,11 +154,36 @@ void GraphVisualization::load_vertex_positions() {
 		float y = START_Y + (i * Y_OFFSET);
 		for (int j = 0; j < results[i].results.size(); j++) {
 			float x = START_X + (j * X_OFFSET);
-			vertices.push_back({{x, y}, results[i]});
+			vertices.push_back({{x, y}, results[i].results[j].second});
 
 			if (j == results[i].results.size() - 1) {
-				vertices.push_back({{x + X_OFFSET, y}, results[i]});
+				vertices.push_back({{x + X_OFFSET, y}, results[i].results[j].second});
 			}
 		}
 	}
+}
+
+void GraphVisualization::draw_result_info(sf::RenderWindow& window, sf::Vector2f position) const {
+	if (clicked_vertex_index < 0 || clicked_vertex_index >= vertices.size()) return;
+
+	FlightRouteStatistics data = vertices[clicked_vertex_index].second;
+
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(2);
+	oss << "Flight Info\n\n";
+	oss << "From: " << data.from << "\n";
+	oss << "To: " << data.to << "\n";
+	oss << "Cancellation: " << data.cancellation_rate << "%\n";
+	oss << "Avg Scheduled Time: " << data.avg_scheduled_time << "\n";
+	oss << "Avg Delay: " << data.avg_delay << "\n";
+	oss << "Avg Real Time: " << data.avg_time << "\n";
+	oss << "Flights: " << data.num_flights << "\n";
+
+	sf::Text info(font);
+	info.setFont(font);
+	info.setString(oss.str());
+	info.setCharacterSize(16);
+	info.setFillColor(sf::Color::White);
+	info.setPosition({position.x + STATS_X, position.y + STATS_Y});
+	window.draw(info);
 }

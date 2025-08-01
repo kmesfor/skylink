@@ -28,11 +28,11 @@ namespace VisualizationConfig {
 	constexpr float INSTRUCTION_TEXT_Y = 0;												// relative y position of instructions text
 
 	constexpr float STATS_WIDTH = WIDTH;												// width of statistics menu
-	constexpr float STATS_HEIGHT = 100;													// height of statistics menu
+	constexpr float STATS_HEIGHT = 200;													// height of statistics menu
 	constexpr float STATS_X = 0;														// relative x start position of statistics menu
 	constexpr float STATS_Y = 0;														// relative y start position of statistics menu
 	constexpr sf::Color STATS_FILL_COLOR = sf::Color(200, 200, 200);		// background color of statistics menu
-	constexpr sf::Color STATS_OUTLINE_COLOR = sf::Color::Green;							// outline color of statistics menu
+	constexpr sf::Color STATS_OUTLINE_COLOR = sf::Color::Black;							// outline color of statistics menu
 	constexpr float STATS_OUTLINE_THICKNESS = 2.0;										// px outline thickness of statistics menu
 
 	constexpr float START_X = 50.0;														// x position to start rendering vertices
