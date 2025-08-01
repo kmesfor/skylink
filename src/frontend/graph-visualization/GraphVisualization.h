@@ -15,22 +15,36 @@
 
 constexpr unsigned int WIDTH = 600;
 constexpr unsigned int HEIGHT = 600;
-constexpr float START_X = 50.0; // x position to start rendering components
-constexpr float START_Y = 50.0; // y position to start rendering components
-constexpr float X_OFFSET = 120.0; // horizontal offset between vertices
-constexpr float Y_OFFSET = 60.0; // vertical offset between vertices
+
 constexpr float VERTEX_RADIUS = 15.0; // px radius of each vertex
 constexpr float VERTEX_TEXT_Y_OFFSET = 10.0; //px below vertex that label should sit
-constexpr sf::Color LINE_COLOR = sf::Color::Black; // line color between vertices
 constexpr sf::Color VERTEX_COLOR = sf::Color::Red;
+
+constexpr sf::Color LINE_COLOR = sf::Color::Black; // line color between vertices
+
 constexpr int LABEL_FONT_SIZE = 12;
 constexpr sf::Color LABEL_COLOR = sf::Color::Green;
+
 constexpr float BOX_THICKNESS = 2.0; // line thickness in px
 constexpr sf::Color BOX_COLOR = sf::Color::Black;
+
 constexpr int INSTRUCTION_FONT_SIZE = 12;
 constexpr sf::Color INSTRUCTION_COLOR = sf::Color::Black;
 constexpr float INSTRUCTION_TEXT_X = 200;
 constexpr float INSTRUCTION_TEXT_Y = 0;
+
+constexpr float STATS_WIDTH = WIDTH;
+constexpr float STATS_HEIGHT = 100;
+constexpr float STATS_X = 0;
+constexpr float STATS_Y = 0;
+constexpr sf::Color STATS_FILL_COLOR = sf::Color(200, 200, 200);
+constexpr sf::Color STATS_OUTLINE_COLOR = sf::Color::Green;
+constexpr float STATS_OUTLINE_THICKNESS = 2.0;
+
+constexpr float START_X = 50.0; // x position to start rendering components
+constexpr float START_Y = 50.0 + STATS_HEIGHT; // y position to start rendering components
+constexpr float X_OFFSET = 120.0; // horizontal offset between vertices
+constexpr float Y_OFFSET = 60.0; // vertical offset between vertices
 
 /**
  * Visualization of the graph created on a RenderTexture to allow it to be a component like a "div" in HTML.
@@ -173,15 +187,33 @@ public:
 			static_cast<float>(HEIGHT) / window.getSize().y}
 		));
 
+		// Activate the altered coordinate plane and render sprite onto window
+		// Do this step above other components to make the graph appear below the graph's 'UI' (stats / instructions)
+		window.setView(scroll_view);
+		window.draw(sprite);
+
+		// Restore regular coordinate plane
+		window.setView(prev_view);
+
 		// Create a visual box to show where the graph's contents scrollable region is
 		sf::RectangleShape box;
 		box.setSize(sf::Vector2f(WIDTH, HEIGHT));
 		box.setPosition(position);
 		box.setOutlineColor(BOX_COLOR);
 		box.setOutlineThickness(BOX_THICKNESS);
+		box.setFillColor(sf::Color::Transparent); // Make graph content below viewable
 
 		// Draw the box
 		window.draw(box);
+
+		// Draw fixed statistics box
+		sf::RectangleShape statistics;
+		statistics.setSize(sf::Vector2f(STATS_WIDTH, STATS_HEIGHT));
+		statistics.setPosition({position.x + STATS_X, position.y + STATS_Y});
+		statistics.setOutlineColor(STATS_OUTLINE_COLOR);
+		statistics.setOutlineThickness(STATS_OUTLINE_THICKNESS);
+		statistics.setFillColor(STATS_FILL_COLOR);
+		window.draw(statistics);
 
 		// Add instructions for using scroll feature, make it fixed to the top (like box)
 		sf::Text instructions(font);
@@ -190,17 +222,7 @@ public:
 		// Make INSTRUCTION_TEXT_X and INSTRUCTION_TEXT_Y be relative to the graph's position on the window
 		instructions.setPosition({position.x + INSTRUCTION_TEXT_X, position.y + INSTRUCTION_TEXT_Y});
 		instructions.setString("Use arrow keys to scroll graph!");
-
 		window.draw(instructions);
-
-		// Activate the altered coordinate plane
-		window.setView(scroll_view);
-
-		// Render sprite onto window on the altered coordinate plane
-		window.draw(sprite);
-
-		// Restore regular coordinate plane
-		window.setView(prev_view);
 	}
 
 	/**
