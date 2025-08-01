@@ -21,7 +21,7 @@ using namespace VisualizationConfig;
  * Visualization of the graph created on a RenderTexture to allow it to be a component like a "div" in HTML.
  * Has a #draw() function to draw onto a render window.
  */
-class GraphVisualization final : sf::RenderTexture {
+class GraphVisualization {
 	std::vector<std::pair<sf::Vector2f, AlgorithmResult>> vertices; // Position and algorithm data for each vertex to be used by the click handler
 	sf::View scrolled_view; // Scrolled view to be used by click handler
 	int clicked_vertex_index = -1;	// Index of vertex actively being highlighted, -1 if none
@@ -53,8 +53,13 @@ class GraphVisualization final : sf::RenderTexture {
 	 */
 	void drawStaticComponents(sf::RenderWindow& window, sf::Vector2f position);
 
+	/**
+	 * Handles setting view, creating graph sprite, and rendering scrollable content
+	 */
+	void drawGraphSprite(sf::RenderWindow& window, sf::Vector2f position);
+
 public:
-	RenderTexture graph; // Store the texture that the graph will be drawn on
+	sf::RenderTexture graph; // Store the texture that the graph will be drawn on
 	sf::View view; // Use an SFML view to create scrollable content
 	sf::Font font; // Store font used throughout graph
 	const std::vector<AlgorithmResult>& results; // Results of algorithm execution
@@ -83,42 +88,13 @@ public:
 	 * @param position coordinates to draw at
 	 */
 	void draw(sf::RenderWindow& window, sf::Vector2f position) {
-		graph.clear(sf::Color::White);
+		graph.clear(sf::Color::Transparent);
 		vertices.clear();
 
 		drawGraphComponents();
 
-		// First, render the components on the graph
-		graph.display();
+		drawGraphSprite(window, position);
 
-		// Next, turn the graph into a sprite than can be drawn onto windows
-		sf::Sprite sprite(graph.getTexture());
-
-		// Make the sprite start drawing at (0,0) within its box, not the position on the window (doubly accounting for distance)
-		sprite.setPosition({0, 0});
-
-		// Store the previous view, basically scroll_view is used to draw the GraphVisualization sprite on an "altered" coordinate plane,
-		// then setting the window's view back to previous_view restores the coordinate plane back to normal
-		sf::View prev_view = window.getView();
-		sf::View scroll_view = view;
-
-		// Set the scrolled view values as a value between 0 and 1 relative to the main view
-		scroll_view.setViewport(sf::FloatRect(
-			{position.x / window.getSize().x,
-			position.y / window.getSize().y},
-			{static_cast<float>(WIDTH) / window.getSize().x,
-			static_cast<float>(HEIGHT) / window.getSize().y}
-		));
-
-		scrolled_view = scroll_view;
-
-		// Activate the altered coordinate plane and render sprite onto window
-		// Do this step above other components to make the graph appear below the graph's 'UI' (stats / instructions)
-		window.setView(scroll_view);
-		window.draw(sprite);
-
-		// Restore regular coordinate plane
-		window.setView(prev_view);
 		drawStaticComponents(window, position);
 	}
 

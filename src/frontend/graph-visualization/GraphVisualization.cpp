@@ -112,3 +112,37 @@ void GraphVisualization::drawStaticComponents(sf::RenderWindow& window, sf::Vect
 	instructions.setString("Use arrow keys to scroll graph!");
 	window.draw(instructions);
 }
+
+void GraphVisualization::drawGraphSprite(sf::RenderWindow& window, sf::Vector2f position) {
+	// First, render the components on the graph
+	graph.display();
+
+	// Next, turn the graph into a sprite than can be drawn onto windows
+	sf::Sprite sprite(graph.getTexture());
+
+	// Make the sprite start drawing at (0,0) within its box, not the position on the window (doubly accounting for distance)
+	sprite.setPosition({0, 0});
+
+	// Store the previous view, basically scroll_view is used to draw the GraphVisualization sprite on an "altered" coordinate plane,
+	// then setting the window's view back to previous_view restores the coordinate plane back to normal
+	sf::View prev_view = window.getView();
+	sf::View scroll_view = view;
+
+	// Set the scrolled view values as a value between 0 and 1 relative to the main view
+	scroll_view.setViewport(sf::FloatRect(
+		{position.x / window.getSize().x,
+		position.y / window.getSize().y},
+		{static_cast<float>(WIDTH) / window.getSize().x,
+		static_cast<float>(HEIGHT) / window.getSize().y}
+	));
+
+	scrolled_view = scroll_view;
+
+	// Activate the altered coordinate plane and render sprite onto window
+	// Do this step above other components to make the graph appear below the graph's 'UI' (stats / instructions)
+	window.setView(scroll_view);
+	window.draw(sprite);
+
+	// Restore regular coordinate plane
+	window.setView(prev_view);
+}
