@@ -19,6 +19,7 @@ constexpr unsigned int HEIGHT = 600;
 constexpr float VERTEX_RADIUS = 15.0; // px radius of each vertex
 constexpr float VERTEX_TEXT_Y_OFFSET = 10.0; //px below vertex that label should sit
 constexpr sf::Color VERTEX_COLOR = sf::Color::Red;
+constexpr sf::Color VERTEX_SELECTED_COLOR = sf::Color::Green;
 
 constexpr sf::Color LINE_COLOR = sf::Color::Black; // line color between vertices
 
@@ -58,10 +59,10 @@ class GraphVisualization final : sf::RenderTexture {
 	 * @param y_pos y position of vertex
 	 * @param font  font to draw in
 	 */
-	void draw_vertex(const std::string& code, float x_pos, float y_pos, const sf::Font& font) {
+	void draw_vertex(const std::string& code, float x_pos, float y_pos, const sf::Font& font, AlgorithmResult result, bool clicked) {
 		// Create the circle object and fill in necessary values
 		sf::CircleShape point(VERTEX_RADIUS);
-		point.setFillColor(VERTEX_COLOR);
+		point.setFillColor(clicked ? VERTEX_SELECTED_COLOR : VERTEX_COLOR);
 		point.setOrigin({VERTEX_RADIUS, VERTEX_RADIUS});
 		point.setPosition({x_pos, y_pos});
 
@@ -82,6 +83,7 @@ class GraphVisualization final : sf::RenderTexture {
 
 		// Draw to graph
 		graph.draw(label);
+		vertices.push_back({{x_pos, y_pos}, result});
 	}
 
 	/**
@@ -100,6 +102,15 @@ class GraphVisualization final : sf::RenderTexture {
 
 		graph.draw(line, 2, sf::PrimitiveType::Lines);
 	}
+
+	// Store positions of vertexes drawn for click handler
+	std::vector<std::pair<sf::Vector2f, AlgorithmResult>> vertices;
+
+	// Store scrolled view to use in click handler
+	sf::View scrolled_view;
+
+	// Index of vertex actively being highlighted, -1 if none
+	int clicked_vertex_index = -1;
 public:
 	// Store the texture that the graph will be drawn on
 	RenderTexture graph;
@@ -110,10 +121,12 @@ public:
 	// Store font to use in other functions
 	sf::Font font;
 
+	const std::vector<AlgorithmResult>& results;
+
 	/**
 	 * Creates the graph ready to be rendered. Draws a graphical representation of airport results
 	 */
-	GraphVisualization(const std::vector<AlgorithmResult>& results) {
+	GraphVisualization(const std::vector<AlgorithmResult>& results) : results(results) {
 		// Create a new RenderTexture to draw components on
 		graph = sf::RenderTexture({WIDTH, HEIGHT});
 
@@ -125,6 +138,17 @@ public:
 			std::cerr << "Failed to load font arial.ttf" << std::endl;
 			return;
 		}
+	}
+
+	/**
+	 * Draw the graph onto Window in a certain position
+	 * @param window Window to draw on
+	 * @param position coordinates to draw at
+	 */
+	void draw(sf::RenderWindow& window, sf::Vector2f position) {
+		graph.clear(sf::Color::White);
+		vertices.clear();
+
 
 		// Iterate each result, draw lines first so they appear below vertices
 		for (int i = 0 ; i < results.size(); i++) {
@@ -143,28 +167,25 @@ public:
 		}
 
 		// Iterate each result, draw vertices second so they appear above vertices
+		int vertex_index = 0;
 		for (int i = 0; i < results.size(); i++) {
 			float y = START_Y + (i * Y_OFFSET);
 			for (int j = 0; j < results[i].results.size(); j++) {
 				float x = START_X + (j * X_OFFSET);
 				// Draw the origin vertex
-				draw_vertex(results[i].results[j].first->origin_code, x, y, font);
+				draw_vertex(results[i].results[j].first->origin_code, x, y, font, results[i], clicked_vertex_index == vertex_index);
+				vertex_index++;
 
 				// On the last flight, also draw the destination vertex to ensure all vertices are drawn
 				if (j == results[i].results.size() - 1) {
 					// Increment x position forward, then draw
-					draw_vertex(results[i].results[j].first->destination_code, START_X + (j+1) * X_OFFSET, y, font);
+					draw_vertex(results[i].results[j].first->destination_code, START_X + (j+1) * X_OFFSET, y, font, results[i], clicked_vertex_index == vertex_index);
+					vertex_index++;
 				}
 			}
 		}
-	}
 
-	/**
-	 * Draw the graph onto Window in a certain position
-	 * @param window Window to draw on
-	 * @param position coordinates to draw at
-	 */
-	void draw(sf::RenderWindow& window, sf::Vector2f position) {
+
 		// First, render the components on the graph
 		graph.display();
 
@@ -186,6 +207,8 @@ public:
 			{static_cast<float>(WIDTH) / window.getSize().x,
 			static_cast<float>(HEIGHT) / window.getSize().y}
 		));
+
+		scrolled_view = scroll_view;
 
 		// Activate the altered coordinate plane and render sprite onto window
 		// Do this step above other components to make the graph appear below the graph's 'UI' (stats / instructions)
@@ -234,6 +257,25 @@ public:
 		center += change;
 		view.setCenter(center);
 	}
+
+	void check_if_vertex_clicked(sf::RenderWindow& window) {
+		// Get the click position relative to the window (uses same coordinate system as vertex locations)
+		sf::Vector2f click = window.mapPixelToCoords(sf::Mouse::getPosition(window), scrolled_view);
+
+		for (int i = 0; i < vertices.size(); i++) {
+			// Use distance formula to see if click is within radius of vertex
+			float d_x = click.x - vertices[i].first.x;
+			float d_y = click.y - vertices[i].first.y;
+			float distance = std::sqrt((d_x * d_x) + (d_y * d_y));
+			if (distance <= VERTEX_RADIUS) {
+				if (clicked_vertex_index == i) {
+					clicked_vertex_index = -1;
+				} else {
+					clicked_vertex_index = i;
+				}
+			}
+		}
+;	}
 };
 
 #endif //GRAPHVISUALIZATION_H

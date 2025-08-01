@@ -38,3 +38,6 @@ Resource Links (update as used):
 * https://stackoverflow.com/questions/42228164/how-to-color-a-line-in-sfml
 * https://stackoverflow.com/questions/16091616/c-sfml-drawing-scrollable-content-within-a-defined-rectangle
 * https://www.sfml-dev.org/documentation/2.4.0-fr/classsf_1_1View.php
+* https://github.com/SFML/SFML/blob/master/migration.md
+* https://stackoverflow.com/questions/51222321/sfml-mouse-getposition-not-working-properly
+* https://stackoverflow.com/questions/28256921/mouse-input-isnt-correct-to-world-coordinates
