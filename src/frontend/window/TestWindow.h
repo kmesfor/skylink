@@ -6,7 +6,6 @@
 #define TESTWINDOW_H
 #include "Window.h"
 #include "frontend/graph-visualization/GraphVisualization.h"
-#include "SFML/Graphics/CircleShape.hpp"
 
 constexpr float SCROLL_SPEED = 10; // px rate at which to scroll at
 
@@ -28,7 +27,7 @@ public:
 
 	void draw(sf::RenderWindow& window) override {
 		window.clear(sf::Color::White);
-		vis->draw(window, {100, 50});
+		vis->draw(window, {100, 300});
 	}
 
 	// Handle keyboard left, right, up, down clicks in reference to scrolling

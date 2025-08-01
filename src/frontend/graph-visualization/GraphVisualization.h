@@ -9,6 +9,10 @@
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 
+#include "SFML/Graphics/Font.hpp"
+#include "SFML/Graphics/RectangleShape.hpp"
+#include "SFML/Graphics/Text.hpp"
+
 constexpr unsigned int WIDTH = 600;
 constexpr unsigned int HEIGHT = 600;
 constexpr float START_X = 50.0; // x position to start rendering components
@@ -25,7 +29,7 @@ constexpr float BOX_THICKNESS = 2.0; // line thickness in px
 constexpr sf::Color BOX_COLOR = sf::Color::Black;
 constexpr int INSTRUCTION_FONT_SIZE = 12;
 constexpr sf::Color INSTRUCTION_COLOR = sf::Color::Black;
-constexpr float INSTRUCTION_TEXT_X = 100;
+constexpr float INSTRUCTION_TEXT_X = 200;
 constexpr float INSTRUCTION_TEXT_Y = 0;
 
 /**
@@ -34,13 +38,13 @@ constexpr float INSTRUCTION_TEXT_Y = 0;
  */
 class GraphVisualization final : sf::RenderTexture {
 	/**
-	 * Function to draw a airport vertex on the graph visualization
+	 * Function to draw an airport vertex on the graph visualization
 	 * @param code airport code
 	 * @param x_pos x position of vertex
 	 * @param y_pos y position of vertex
 	 * @param font  font to draw in
 	 */
-	void draw_vertex(const std::string& code, float x_pos, float y_pos, sf::Font& font) {
+	void draw_vertex(const std::string& code, float x_pos, float y_pos, const sf::Font& font) {
 		// Create the circle object and fill in necessary values
 		sf::CircleShape point(VERTEX_RADIUS);
 		point.setFillColor(VERTEX_COLOR);
@@ -89,6 +93,9 @@ public:
 	// Use an SFML view to create scrollable content
 	sf::View view;
 
+	// Store font to use in other functions
+	sf::Font font;
+
 	/**
 	 * Creates the graph ready to be rendered. Draws a graphical representation of airport results
 	 */
@@ -100,21 +107,10 @@ public:
 		view = sf::View(sf::FloatRect({0, 0}, {WIDTH, HEIGHT}));
 
 		// Load the font used for text labels
-		sf::Font font;
 		if (!font.openFromFile("arial.ttf")) { // Stored in dist/
 			std::cerr << "Failed to load font arial.ttf" << std::endl;
 			return;
 		}
-
-		// Add instructions for using scroll feature
-		sf::Text instructions(font);
-		instructions.setCharacterSize(INSTRUCTION_FONT_SIZE);
-		instructions.setFillColor(INSTRUCTION_COLOR);
-		instructions.setPosition({INSTRUCTION_TEXT_X, INSTRUCTION_TEXT_Y});
-		instructions.setString("Use arrow keys to scroll graph!");
-
-		graph.draw(instructions);
-
 
 		// Iterate each result, draw lines first so they appear below vertices
 		for (int i = 0 ; i < results.size(); i++) {
@@ -161,8 +157,8 @@ public:
 		// Next, turn the graph into a sprite than can be drawn onto windows
 		sf::Sprite sprite(graph.getTexture());
 
-		// Set the position
-		sprite.setPosition(position);
+		// Make the sprite start drawing at (0,0) within its box, not the position on the window (doubly accounting for distance)
+		sprite.setPosition({0, 0});
 
 		// Store the previous view, basically scroll_view is used to draw the GraphVisualization sprite on an "altered" coordinate plane,
 		// then setting the window's view back to previous_view restores the coordinate plane back to normal
@@ -186,6 +182,16 @@ public:
 
 		// Draw the box
 		window.draw(box);
+
+		// Add instructions for using scroll feature, make it fixed to the top (like box)
+		sf::Text instructions(font);
+		instructions.setCharacterSize(INSTRUCTION_FONT_SIZE);
+		instructions.setFillColor(INSTRUCTION_COLOR);
+		// Make INSTRUCTION_TEXT_X and INSTRUCTION_TEXT_Y be relative to the graph's position on the window
+		instructions.setPosition({position.x + INSTRUCTION_TEXT_X, position.y + INSTRUCTION_TEXT_Y});
+		instructions.setString("Use arrow keys to scroll graph!");
+
+		window.draw(instructions);
 
 		// Activate the altered coordinate plane
 		window.setView(scroll_view);

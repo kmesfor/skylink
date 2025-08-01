@@ -4,9 +4,7 @@
 
 #include "frontend.h"
 
-#include <SFML/Graphics.hpp>
 #include <vector>
-#include <iostream>
 
 #include "backend/datamodels/AlgorithmResult.h"
 #include "window/TestWindow.h"

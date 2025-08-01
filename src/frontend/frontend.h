@@ -6,7 +6,6 @@
 #define FRONTEND_H
 #include <vector>
 #include "backend/datamodels/AlgorithmResult.h"
-#include "SFML/Graphics/RenderWindow.hpp"
 
 class Frontend {
 public:
