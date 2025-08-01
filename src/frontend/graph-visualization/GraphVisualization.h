@@ -4,6 +4,7 @@
 
 #ifndef GRAPHVISUALIZATION_H
 #define GRAPHVISUALIZATION_H
+#include "VisualizationConfig.h"
 #include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
@@ -13,39 +14,7 @@
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "SFML/Graphics/Text.hpp"
 
-constexpr unsigned int WIDTH = 600;
-constexpr unsigned int HEIGHT = 600;
-
-constexpr float VERTEX_RADIUS = 15.0; // px radius of each vertex
-constexpr float VERTEX_TEXT_Y_OFFSET = 10.0; //px below vertex that label should sit
-constexpr sf::Color VERTEX_COLOR = sf::Color::Red;
-constexpr sf::Color VERTEX_SELECTED_COLOR = sf::Color::Green;
-
-constexpr sf::Color LINE_COLOR = sf::Color::Black; // line color between vertices
-
-constexpr int LABEL_FONT_SIZE = 12;
-constexpr sf::Color LABEL_COLOR = sf::Color::Green;
-
-constexpr float BOX_THICKNESS = 2.0; // line thickness in px
-constexpr sf::Color BOX_COLOR = sf::Color::Black;
-
-constexpr int INSTRUCTION_FONT_SIZE = 12;
-constexpr sf::Color INSTRUCTION_COLOR = sf::Color::Black;
-constexpr float INSTRUCTION_TEXT_X = 200;
-constexpr float INSTRUCTION_TEXT_Y = 0;
-
-constexpr float STATS_WIDTH = WIDTH;
-constexpr float STATS_HEIGHT = 100;
-constexpr float STATS_X = 0;
-constexpr float STATS_Y = 0;
-constexpr sf::Color STATS_FILL_COLOR = sf::Color(200, 200, 200);
-constexpr sf::Color STATS_OUTLINE_COLOR = sf::Color::Green;
-constexpr float STATS_OUTLINE_THICKNESS = 2.0;
-
-constexpr float START_X = 50.0; // x position to start rendering components
-constexpr float START_Y = 50.0 + STATS_HEIGHT; // y position to start rendering components
-constexpr float X_OFFSET = 120.0; // horizontal offset between vertices
-constexpr float Y_OFFSET = 60.0; // vertical offset between vertices
+using namespace VisualizationConfig;
 
 /**
  * Visualization of the graph created on a RenderTexture to allow it to be a component like a "div" in HTML.
@@ -72,8 +41,8 @@ class GraphVisualization final : sf::RenderTexture {
 		// Create a text label for the airport code
 		sf::Text label(font);
 		label.setString(code);
-		label.setCharacterSize(LABEL_FONT_SIZE);
-		label.setFillColor(LABEL_COLOR);
+		label.setCharacterSize(VERTEX_LABEL_FONT_SIZE);
+		label.setFillColor(VERTEX_LABEL_COLOR);
 
 		// Set the origin position of the label to the center of the text box
 		label.setOrigin(label.getLocalBounds().getCenter());

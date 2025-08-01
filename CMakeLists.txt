@@ -46,6 +46,7 @@ add_executable(Skylink
         src/backend/datamodels/SkylinkGraph.h
         src/backend/datamodels/AlgorithmResult.h
         src/backend/datamodels/FlightRouteStatistics.h
+        src/frontend/graph-visualization/VisualizationConfig.h
 )
 
 # These tests can use the Catch2-provided main
