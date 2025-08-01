@@ -17,9 +17,11 @@ int main() {
 	Airport* end = parser.graph->airport_lookup["GNV"];
 
 	Dijkstra dijkstra(parser.graph, start, end, WeightType::DELAY);
-	dijkstra.execute(1);
+	dijkstra.execute(5);
 
 	std::vector<AlgorithmResult> results = dijkstra.get_results();
+
+	//TODO: implement a state manager to communicate between the backend and frontend
 
 	for (int i = 0; i < results.size(); i++) {
 		std::cout << "RESULT " << i+1 << ":" << std::endl;
@@ -27,5 +29,5 @@ int main() {
 		results[i].print();
 		std::cout << "----------------------------------" << std::endl;
 	}
-	// Frontend::display();
+	Frontend::display(results, parser.graph);
 }
