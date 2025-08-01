@@ -48,8 +48,8 @@ protected:
 public: // Everything below here is public facing and can be interacted with outside of the WindowManager. Anything above should not.
 	// Constructor
 	Window() {
-		this->width = 800;
-		this->height = 600;
+		this->width = 1200;
+		this->height = 800;
 		this->name = WindowNames::NONE;
 		this->signal = WindowSignal::NONE;
 	}

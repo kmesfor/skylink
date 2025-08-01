@@ -14,8 +14,6 @@ class TestWindow : public Window {
 	GraphVisualization* vis = nullptr;
 public:
 	TestWindow(std::vector<AlgorithmResult>* results) {
-		this->width = 800;
-		this->height = 1000;
 		this->name = WindowNames::MAIN;
 		this->results = results;
 		this->vis = new GraphVisualization(*results);
@@ -26,8 +24,8 @@ public:
 	}
 
 	void draw(sf::RenderWindow& window) override {
-		window.clear(sf::Color::White);
-		vis->draw(window, {100, 300});
+		window.clear(VisualizationConfig::COLOR_BG);
+		vis->draw(window, {200, 50});
 	}
 
 	// Handle keyboard left, right, up, down clicks in reference to scrolling
