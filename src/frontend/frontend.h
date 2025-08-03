@@ -6,9 +6,11 @@
 #define FRONTEND_H
 #include <vector>
 #include "backend/datamodels/AlgorithmResult.h"
+#include "SFML/Graphics/Font.hpp"
 
 class Frontend {
 public:
+	static sf::Font font;
 	static void display(std::vector<AlgorithmResult>& results, SkylinkGraph* graph);
 };
 

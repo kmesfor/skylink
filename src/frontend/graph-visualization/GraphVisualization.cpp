@@ -4,6 +4,7 @@
 
 #include "GraphVisualization.h"
 
+#include "frontend/frontend.h"
 #include "SFML/Graphics/CircleShape.hpp"
 
 void GraphVisualization:: draw_vertex(const std::string& code, const sf::Vector2f pos, const FlightRouteStatistics& result, const bool clicked) {
@@ -17,7 +18,7 @@ void GraphVisualization:: draw_vertex(const std::string& code, const sf::Vector2
 	graph.draw(point);
 
 	// Create a text label for the airport code
-	sf::Text label(font);
+	sf::Text label(Frontend::font);
 	label.setString(code);
 	label.setCharacterSize(VERTEX_LABEL_FONT_SIZE);
 	label.setFillColor(VERTEX_LABEL_COLOR);
@@ -101,7 +102,7 @@ void GraphVisualization::draw_static_components(sf::RenderWindow& window, sf::Ve
 	window.draw(statistics);
 
 	// Add instructions for using scroll feature, make it fixed to the top (like box)
-	sf::Text instructions(font);
+	sf::Text instructions(Frontend::font);
 	instructions.setCharacterSize(INSTRUCTION_FONT_SIZE);
 	instructions.setFillColor(INSTRUCTION_COLOR);
 	// Make INSTRUCTION_TEXT_X and INSTRUCTION_TEXT_Y be relative to the graph's position on the window
@@ -165,9 +166,9 @@ void GraphVisualization::load_vertex_positions() {
 void GraphVisualization::draw_result_info(sf::RenderWindow& window, sf::Vector2f position) const {
 	auto result = std::get<2>(vertices[clicked_vertex_index]);
 
-	sf::Text overall_info(font);
+	sf::Text overall_info(Frontend::font);
 	auto overall_stats = result->get_overall_statistics();
-	overall_info.setFont(font);
+	overall_info.setFont(Frontend::font);
 
 	std::ostringstream str;
 	str << std::fixed << std::setprecision(5);
@@ -191,8 +192,8 @@ void GraphVisualization::draw_result_info(sf::RenderWindow& window, sf::Vector2f
 
 	FlightRouteStatistics connection = std::get<1>(vertices[clicked_vertex_index]);
 
-	sf::Text info(font);
-	info.setFont(font);
+	sf::Text info(Frontend::font);
+	info.setFont(Frontend::font);
 	info.setString("\n" + connection.to_string());
 	info.setCharacterSize(STATS_SUMMARY_FONT_SIZE);
 	info.setFillColor(STATS_CONNECTION_COLOR);

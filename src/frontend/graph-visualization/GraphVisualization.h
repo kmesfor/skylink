@@ -8,7 +8,6 @@
 
 #include "VisualizationConfig.h"
 #include "backend/datamodels/AlgorithmResult.h"
-#include "SFML/Graphics/Font.hpp"
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
@@ -73,7 +72,6 @@ class GraphVisualization {
 public:
 	sf::RenderTexture graph; // Store the texture that the graph will be drawn on
 	sf::View view; // Use an SFML view to create scrollable content
-	sf::Font font; // Store font used throughout graph
 	const std::vector<AlgorithmResult>& results; // Results of algorithm execution
 
 	/**
@@ -85,12 +83,6 @@ public:
 
 		// Initialize the view starting at 0, 0
 		view = sf::View(sf::FloatRect({0, 0}, {WIDTH, HEIGHT}));
-
-		// Load the font used for text labels
-		if (!font.openFromFile("JetBrainsMono-Regular.ttf")) { // Stored in dist/
-			std::cerr << "Failed to load font JetBrainsMono-Regular.ttf" << std::endl;
-			return;
-		}
 
 		load_vertex_positions();
 	}
