@@ -12,33 +12,58 @@ constexpr float SCROLL_SPEED = 10; // px rate at which to scroll at
 
 class ResultWindow : public Window {
 	std::vector<AlgorithmResult>* results;
-	GraphVisualization* vis = nullptr;
-	Button* button = nullptr;
+	GraphVisualization* dijkstra_vis;
+	GraphVisualization* a_star_vis;
+
+	Button* dijkstra_btn;
+	Button* a_star_btn;
+
+	bool dijkstra_vis_showing;
+	GraphVisualization* current_vis;
+
 public:
 	explicit ResultWindow(std::vector<AlgorithmResult>* results) {
 		this->name = WindowNames::MAIN;
 		this->results = results;
-		this->vis = new GraphVisualization(*results);
-		this->button = new Button("test", Button::PRIMARY_ACTIVE);
+		this->dijkstra_vis = new GraphVisualization(*results);
+		//TODO: change this when A* is done
+		this->a_star_vis = new GraphVisualization(*results);
 
-		button->set_size({50, 50});
-		button->set_position({50, 50});
-		button->set_text_size(8);
-		button->set_click_action([this] () {
-			button->toggle_state();
+		this->dijkstra_btn = new Button("View Dijkstra Results", Button::PRIMARY_INACTIVE);
+		this->a_star_btn = new Button("View A* Results", Button::PRIMARY_ACTIVE);
+
+		dijkstra_btn->set_size({150, 50});
+		dijkstra_btn->set_position({100, 100});
+		dijkstra_btn->set_text_size(12);
+		dijkstra_btn->set_click_action([this] () {
+			toggle_visualization_state();
 		});
+
+		a_star_btn->set_size({150, 50});
+		a_star_btn->set_position({100, 300});
+		a_star_btn->set_text_size(12);
+		a_star_btn->set_click_action([this] () {
+			toggle_visualization_state();
+		});
+
+		this->dijkstra_vis_showing = true;
+		current_vis = dijkstra_vis;
 	}
 
 	~ResultWindow() override {
-		delete this->vis;
-		delete this->button;
+		delete this->dijkstra_vis;
+		delete this->a_star_vis;
+		delete this->dijkstra_btn;
+		delete this->a_star_btn;
 	}
 
 	void draw(sf::RenderWindow& window) override {
 		window.clear(VisualizationConfig::COLOR_BG);
 
-		button->draw(window);
-		vis->draw(window, {200, 50});
+		dijkstra_btn->draw(window);
+		a_star_btn->draw(window);
+
+		current_vis->draw(window, {200, 50});
 	}
 
 	// Handle keyboard left, right, up, down clicks in reference to scrolling
@@ -48,21 +73,36 @@ public:
 			if (event->getIf<sf::Event::KeyPressed>()) {
 				// Handle appropriate scrolling movement based on key direction
 				if (event->getIf<sf::Event::KeyPressed>()->code == sf::Keyboard::Key::Right) {
-					vis->scroll({-SCROLL_SPEED, 0});
+					current_vis->scroll({-SCROLL_SPEED, 0});
 				} else if (event->getIf<sf::Event::KeyPressed>()->code == sf::Keyboard::Key::Left) {
-					vis->scroll({SCROLL_SPEED, 0});
+					current_vis->scroll({SCROLL_SPEED, 0});
 				} else if (event->getIf<sf::Event::KeyPressed>()->code == sf::Keyboard::Key::Up) {
-					vis->scroll({0, SCROLL_SPEED});
+					current_vis->scroll({0, SCROLL_SPEED});
 				} else if (event->getIf<sf::Event::KeyPressed>()->code == sf::Keyboard::Key::Down) {
-					vis->scroll({0, -SCROLL_SPEED});
+					current_vis->scroll({0, -SCROLL_SPEED});
 				}
 			// Check for click
 			} else if (event->getIf<sf::Event::MouseButtonPressed>()) {
 				// Pass click to graph handler
-				vis->check_if_vertex_clicked(window);
+				current_vis->check_if_vertex_clicked(window);
 			}
 
-			button->handle_event(*event, window);
+			dijkstra_btn->handle_event(*event, window);
+			a_star_btn->handle_event(*event, window);
+		}
+	}
+
+	void toggle_visualization_state() {
+		this->dijkstra_vis_showing = !this->dijkstra_vis_showing;
+
+		if (dijkstra_vis_showing == true) {
+			dijkstra_btn->set_state(Button::ButtonState::PRIMARY_INACTIVE);
+			a_star_btn->set_state(Button::ButtonState::PRIMARY_ACTIVE);
+			current_vis = dijkstra_vis;
+		} else {
+			dijkstra_btn->set_state(Button::ButtonState::PRIMARY_ACTIVE);
+			a_star_btn->set_state(Button::ButtonState::PRIMARY_INACTIVE);
+			current_vis = a_star_vis;
 		}
 	}
 
