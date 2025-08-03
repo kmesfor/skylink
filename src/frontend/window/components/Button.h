@@ -42,7 +42,6 @@ public:
 		action = []() {};
 	}
 
-
 	void set_size(const sf::Vector2f& size) {
 		body.setSize(size);
 		body.setOrigin({size.x / 2.0f, size.y / 2.0f});
@@ -128,7 +127,9 @@ public:
 
 	void handle_event(const sf::Event& event, sf::RenderWindow& window) {
 		if (event.getIf<sf::Event::MouseButtonPressed>()) {
-			handle_click(window);
+			if (is_in_bounds(window)) {
+				handle_click();
+			}
 		} else if (event.getIf<sf::Event::MouseMoved>()) {
 			if (is_in_bounds(window)) {
 				is_hovered = true;
@@ -138,7 +139,7 @@ public:
 		}
 	}
 
-	void handle_click(const sf::RenderWindow& window) const {
+	void handle_click() const {
 		if (state == PRIMARY_ACTIVE || state == SECONDARY_ACTIVE) {
 			action();
 		}
