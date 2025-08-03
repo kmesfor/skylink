@@ -8,7 +8,7 @@
 #include "frontend/graph-visualization/GraphVisualization.h"
 #include "frontend/window/components/Button.h"
 
-constexpr float SCROLL_SPEED = 10; // px rate at which to scroll at
+constexpr float SCROLL_SPEED = 20; // px rate at which to scroll at
 
 class ResultWindow : public Window {
 	std::vector<AlgorithmResult>* results;
