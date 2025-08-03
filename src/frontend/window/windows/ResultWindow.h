@@ -2,29 +2,42 @@
 // Created by Kian Mesforush on 7/31/25.
 //
 
-#ifndef TESTWINDOW_H
-#define TESTWINDOW_H
-#include "Window.h"
+#ifndef RESULTWINDOW_H
+#define RESULTWINDOW_H
+#include "../Window.h"
 #include "frontend/graph-visualization/GraphVisualization.h"
+#include "frontend/window/components/Button.h"
 
 constexpr float SCROLL_SPEED = 10; // px rate at which to scroll at
 
-class TestWindow : public Window {
+class ResultWindow : public Window {
 	std::vector<AlgorithmResult>* results;
 	GraphVisualization* vis = nullptr;
+	Button* button = nullptr;
 public:
-	TestWindow(std::vector<AlgorithmResult>* results) {
+	explicit ResultWindow(std::vector<AlgorithmResult>* results) {
 		this->name = WindowNames::MAIN;
 		this->results = results;
 		this->vis = new GraphVisualization(*results);
+		this->button = new Button("test", Button::PRIMARY_ACTIVE);
+
+		button->set_size({50, 50});
+		button->set_position({50, 50});
+		button->set_text_size(8);
+		button->set_click_action([this] () {
+			button->toggle_state();
+		});
 	}
 
-	~TestWindow() override {
+	~ResultWindow() override {
 		delete this->vis;
+		delete this->button;
 	}
 
 	void draw(sf::RenderWindow& window) override {
 		window.clear(VisualizationConfig::COLOR_BG);
+
+		button->draw(window);
 		vis->draw(window, {200, 50});
 	}
 
@@ -48,8 +61,10 @@ public:
 				// Pass click to graph handler
 				vis->check_if_vertex_clicked(window);
 			}
+
+			button->handle_event(*event, window);
 		}
 	}
 
 };
-#endif //TESTWINDOW_H
+#endif //RESULTWINDOW_H

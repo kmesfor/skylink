@@ -51,7 +51,7 @@ add_executable(Skylink
         src/frontend/window/Window.h
         src/frontend/window/WindowSignal.h
         src/frontend/window/WindowManager.h
-        src/frontend/window/TestWindow.h
+        src/frontend/window/windows/ResultWindow.h
         src/frontend/window/WindowNames.h
         src/frontend/graph-visualization/GraphVisualization.cpp
 )
@@ -73,6 +73,7 @@ add_executable(GenerateGraphFiles
         src/backend/graph-generator/LoadAirportRoutes.h
         src/backend/graph-generator/DeleteDisconnectedRoutes.h
         src/backend/datamodels/WeightType.h
+        src/frontend/window/components/Button.h
 )
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain) #link catch to test.cpp file
