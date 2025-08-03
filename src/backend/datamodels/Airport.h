@@ -73,6 +73,7 @@ private:
 		try {
 			airport->code = data.at("code").get<AirportCode>();
 			airport->name = data.at("name").get<std::string>();
+			airport->name = airport->name.substr(0, airport->name.find(':'));
 			airport->in_degree = data.at("in").get<int>();
 			airport->out_degree = data.at("out").get<int>();
 			for (const auto& route : data.at("outgoing_routes")) {

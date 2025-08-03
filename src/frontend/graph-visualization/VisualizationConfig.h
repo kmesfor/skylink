@@ -11,7 +11,7 @@ namespace VisualizationConfig {
 	constexpr sf::Color COLOR_SECONDARY = sf::Color(176, 185, 232);
 	constexpr sf::Color COLOR_BG = sf::Color(252,252, 253);
 
-	constexpr unsigned int WIDTH = 800;													// Window height
+	constexpr unsigned int WIDTH = 900;													// Window height
 	constexpr unsigned int HEIGHT = 700;												// Window Width
 
 	constexpr float VERTEX_RADIUS = 12.0;												// px radius of each vertex

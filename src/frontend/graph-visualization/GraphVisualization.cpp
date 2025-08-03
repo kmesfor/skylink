@@ -172,7 +172,7 @@ void GraphVisualization::draw_result_info(sf::RenderWindow& window, sf::Vector2f
 
 	std::ostringstream str;
 	str << std::fixed << std::setprecision(5);
-	str << "Summary: " << result->start->code << " to " << result->end->code << "\n\n";
+	str << "Summary: " << result->start->name << " (" << result->start->code << ")" << " to " << result->end->name << " (" << result->end->code << ")\n\n";
 	str << "Algorithm: " << result->algorithm_name << " (" << result->elapsed_time.count() << " seconds)\n";
 	str << std::fixed << std::setprecision(2);
 	str << "Weight Type: " << (result->edge_weight_type == WeightType::DELAY ? "delay" : "distance") << "\n";

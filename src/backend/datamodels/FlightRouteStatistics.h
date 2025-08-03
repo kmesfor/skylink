@@ -17,12 +17,16 @@ struct FlightRouteStatistics {
 	int num_flights;
 	std::string from;
 	std::string to;
+	std::string from_name;
+	std::string to_name;
 
 	/**
 	 * Initialize route statistics through an airport. Avoids exposing unnecessary data to frontend
 	 * @param airport_route airport route to genereate data from
+	 * @param from_name name of outgoing airport
+	 * @param to_name name of destination airport
 	 */
-	explicit FlightRouteStatistics(const AirportRoute* airport_route) {
+	explicit FlightRouteStatistics(const AirportRoute* airport_route, const std::string& from_name, const std::string& to_name) {
 		this->cancellation_rate = static_cast<double>(airport_route->cancelled) / airport_route->num_flights;
 		this->avg_scheduled_time = airport_route->avg_scheduled_time;
 		this->avg_delay = airport_route->avg_delay;
@@ -30,6 +34,8 @@ struct FlightRouteStatistics {
 		this->num_flights = airport_route->num_flights;
 		this->from = airport_route->origin_code;
 		this->to = airport_route->destination_code;
+		this->from_name = from_name;
+		this->to_name = to_name;
 	}
 
 	/**
@@ -46,7 +52,7 @@ struct FlightRouteStatistics {
 	std::string to_string() const {
 		std::ostringstream oss;
 		oss << std::fixed << std::setprecision(2);
-		oss << "\nConnection from " << from << " to " << to << "\n\n";
+		oss << "\nConnection from " << from_name << " (" << from << ")\nto " << to_name << " (" << to << ")\n\n";
 		oss << "Cancellation: " << cancellation_rate << "%\n";
 		oss << "Average Scheduled Time: " << avg_scheduled_time << " mins\n";
 		oss << "Average Delay: " << avg_delay << " mins\n";
