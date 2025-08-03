@@ -86,7 +86,12 @@ public:
 			result.elapsed_time = elapsed_time;
 			// For each step in the result, create a new FlightRouteStatistics object and push it to the AlgorithmResult object
 			for (auto step : route) {
-				result.results.push_back(std::make_pair(step, FlightRouteStatistics(step)));
+				auto step_origin_name = step->origin_code;
+				std::string step_destination_name = step->destination_code;
+
+				step_origin_name = graph->airport_lookup.at(static_cast<std::string>(step->origin_code))->name;
+				step_destination_name = graph->airport_lookup.at(static_cast<std::string>(step->destination_code))->name;
+				result.results.push_back(std::make_pair(step, FlightRouteStatistics(step, step_origin_name, step_destination_name)));
 			}
 			results.push_back(result);
 		}
