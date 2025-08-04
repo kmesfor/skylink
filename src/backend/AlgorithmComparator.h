@@ -7,7 +7,7 @@
 #include <string>
 
 #include "DataManager.h"
-// #include "algorithms/AStar.h"
+#include "algorithms/AStar.h"
 #include "algorithms/Dijkstra.h"
 #include "datamodels/AlgorithmResult.h"
 
@@ -44,9 +44,9 @@ struct AlgorithmComparator {
 		dijkstra_results = dijkstra.get_results();
 
 		//TODO: Change this
-		// AStar AStar(graph, start_airport, end_airport, weight_type);
-		// AStar.execute(num_results);
-		// a_star_results = AStar.get_results();
+		AStar AStar(graph, start_airport, end_airport, weight_type);
+		AStar.execute(num_results);
+		a_star_results = AStar.get_results();
 		a_star_results = dijkstra.get_results();
 	}
 
