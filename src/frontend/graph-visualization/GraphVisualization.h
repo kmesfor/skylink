@@ -23,7 +23,7 @@ using namespace VisualizationConfig;
 class GraphVisualization {
 	std::vector<std::tuple<sf::Vector2f, FlightRouteStatistics, const AlgorithmResult*>> vertices; // Position and algorithm data for each vertex to be used by the click handler
 	sf::View scrolled_view; // Scrolled view to be used by click handler
-	int clicked_vertex_index = -1;	// Index of vertex actively being highlighted, -1 if none
+	int clicked_vertex_index = 0;	// Index of vertex actively being highlighted, -1 if none
 
 	/**
 	 * Function to draw an airport vertex on the graph visualization

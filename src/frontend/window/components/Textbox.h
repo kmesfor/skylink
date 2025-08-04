@@ -133,7 +133,7 @@ public:
 	void handle_typing(const sf::Event& event) {
 		if (auto key = event.getIf<sf::Event::KeyPressed>()) {
 			// key pressed is a-z
-			if (key->code >= sf::Keyboard::Key::A && key->code <= sf::Keyboard::Key::Z) {
+			if ((key->code >= sf::Keyboard::Key::A && key->code <= sf::Keyboard::Key::Z) || (key->code >= sf::Keyboard::Key::Num0 && key->code <= sf::Keyboard::Key::Num9)) {
 				input_text += sf::Keyboard::getDescription(key->scancode);
 				can_submit = can_submit_func();
 			} else if (key->code == sf::Keyboard::Key::Backspace) {

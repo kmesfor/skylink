@@ -176,7 +176,7 @@ void GraphVisualization::draw_result_info(sf::RenderWindow& window, sf::Vector2f
 	str << "Algorithm: " << result->algorithm_name << " (" << result->elapsed_time.count() << " seconds)\n";
 	str << std::fixed << std::setprecision(2);
 	str << "Weight Type: " << (result->edge_weight_type == WeightType::DELAY ? "delay" : "distance") << "\n";
-	str << "Connections: " << result->results.size() << "\n\n";
+	str << "Number of Results: " << results.size() << "\n\n";
 	str << "Cancellation: " << overall_stats.cancellation_rate << "%\n";
 	str << "Average Scheduled Time: " << overall_stats.avg_scheduled_time << " mins" << "\n";
 	str << "Average Delay: " << overall_stats.avg_delay << " mins" << "\n";
