@@ -53,6 +53,7 @@ add_executable(Skylink
         src/frontend/window/windows/ResultWindow.h
         src/frontend/window/WindowNames.h
         src/frontend/graph-visualization/GraphVisualization.cpp
+        src/frontend/window/windows/PrimaryWindow.h
 )
 
 # These tests can use the Catch2-provided main
@@ -74,6 +75,7 @@ add_executable(GenerateGraphFiles
         src/backend/datamodels/WeightType.h
         src/frontend/window/components/Button.h
         src/backend/graph-generator/AddAirportLocationData.h
+        src/frontend/window/components/Textbox.h
 )
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain) #link catch to test.cpp file

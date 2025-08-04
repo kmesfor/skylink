@@ -7,6 +7,7 @@
 #include "../Window.h"
 #include "frontend/graph-visualization/GraphVisualization.h"
 #include "frontend/window/components/Button.h"
+#include "frontend/window/components/Textbox.h"
 
 constexpr float SCROLL_SPEED = 20; // px rate at which to scroll at
 
@@ -17,12 +18,14 @@ class ResultWindow : public Window {
 	Button* dijkstra_btn;
 	Button* a_star_btn;
 
+	Textbox* a;
+
 	bool dijkstra_vis_showing;
 	GraphVisualization* current_vis;
 
 public:
 	explicit ResultWindow(AlgorithmComparator& comparator) {
-		this->name = WindowNames::MAIN;
+		this->name = WindowNames::RESULTS;
 		this->dijkstra_vis = new GraphVisualization(comparator.get_dijkstra_results());
 		this->a_star_vis = new GraphVisualization(comparator.get_a_star_results());
 
@@ -43,6 +46,11 @@ public:
 			toggle_visualization_state();
 		});
 
+		a = new Textbox("test", "test2", {100, 100});
+		a->set_size({150, 50});
+		a->set_position({100, 500});
+		a->set_text_size(12);
+
 		this->dijkstra_vis_showing = true;
 		current_vis = dijkstra_vis;
 	}
@@ -52,6 +60,7 @@ public:
 		delete this->a_star_vis;
 		delete this->dijkstra_btn;
 		delete this->a_star_btn;
+		delete this->a;
 	}
 
 	void draw(sf::RenderWindow& window) override {
@@ -59,8 +68,8 @@ public:
 
 		dijkstra_btn->draw(window);
 		a_star_btn->draw(window);
-
 		current_vis->draw(window, {200, 50});
+		a->draw(window);
 	}
 
 	// Handle keyboard left, right, up, down clicks in reference to scrolling
@@ -86,6 +95,7 @@ public:
 
 			dijkstra_btn->handle_event(*event, window);
 			a_star_btn->handle_event(*event, window);
+			a->handle_event(*event, window);
 		}
 	}
 

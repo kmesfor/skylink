@@ -44,3 +44,4 @@ Resource Links (update as used):
 * https://stackoverflow.com/questions/23637765/does-c-provide-a-triple-template-comparable-to-pairt1-t2
 * https://stackoverflow.com/questions/14505571/centering-text-on-the-screen-with-sfml
 * https://data.opendatasoft.com/explore/dataset/airports-code%40public/export/?flg=en-us&refine.country_name=United+States
+* https://stackoverflow.com/questions/54681508/how-can-i-add-a-sort-of-text-box-in-sfml-using-keyboard-input-and-sftext-to-di

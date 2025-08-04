@@ -20,8 +20,8 @@ void Frontend::display(AlgorithmComparator& comparator, SkylinkGraph* graph) {
         return;
     }
 
-    ResultWindow test_window(comparator);
-    wm.add_window(test_window);
+    ResultWindow result_window(comparator);
+    wm.add_window(result_window);
 
-    wm.render_window(WindowNames::MAIN);
+    wm.render_window(WindowNames::RESULTS);
 }
