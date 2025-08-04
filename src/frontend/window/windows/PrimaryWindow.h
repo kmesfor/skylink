@@ -9,7 +9,7 @@
 #include "frontend/window/components/Button.h"
 #include "frontend/window/components/Textbox.h"
 
-class PrimaryWindow : public Window {
+struct PrimaryWindow : public Window {
 	AlgorithmComparator& comparator;
 
 	Textbox* start;
@@ -22,7 +22,6 @@ class PrimaryWindow : public Window {
 	sf::Text* subtext_three;
 	sf::Text* subtext_four;
 
-public:
 	PrimaryWindow(AlgorithmComparator& comparator): comparator(comparator) {
 		this->name = WindowNames::MAIN;
 
@@ -73,6 +72,9 @@ public:
 		submit->set_size({300, 100});
 		submit->set_position({600, 700});
 		submit->set_text_size(18);
+		submit->set_click_action([this] {
+			set_window_signal(WindowSignal::SHOW_ALGORITHM);
+		});
 
 		subtext_four = new sf::Text(*subtext_one);
 		subtext_four->setString("Make sure airports are valid before you submit, otherwise, you cannot press the submit button");

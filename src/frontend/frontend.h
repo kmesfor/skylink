@@ -13,7 +13,8 @@
 class Frontend {
 public:
 	static sf::Font font;
-	static void display(AlgorithmComparator& comparator, SkylinkGraph* graph);
+	static AlgorithmComparator* comparator;
+	static void display(SkylinkGraph* graph);
 };
 
 

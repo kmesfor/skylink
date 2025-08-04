@@ -28,8 +28,6 @@ struct AlgorithmComparator {
 		this->graph = graph;
 		this->weight_type = weight_type;
 		this->num_results = num_results;
-
-		run();
 	}
 
 	/**
@@ -38,6 +36,7 @@ struct AlgorithmComparator {
 	void run() {
 		const Airport* start_airport = graph->airport_lookup[start];
 		const Airport* end_airport = graph->airport_lookup[end];
+
 
 		Dijkstra dijkstra(graph, start_airport, end_airport, weight_type);
 		dijkstra.execute(num_results);

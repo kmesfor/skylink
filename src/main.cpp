@@ -13,11 +13,5 @@
 int main() {
 	DataManager parser("./data/generated/skylinkgraph.json");
 
-	std::string start = "IAD";
-	std::string end = "GNV";
-	WeightType type = WeightType::DELAY;
-
-	AlgorithmComparator comparator(start, end, parser.graph, type, 5);
-
-	Frontend::display(comparator, parser.graph);
+	Frontend::display(parser.graph);
 }

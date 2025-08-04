@@ -10,6 +10,8 @@
 #include "WindowNames.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "Window.h"
+#include "frontend/frontend.h"
+#include "windows/PrimaryWindow.h"
 
 constexpr int WINDOW_WIDTH = 800;
 constexpr int WINDOW_HEIGHT = 600;
@@ -65,6 +67,24 @@ public:
 					// Pass event handling to the Window object
 					window->handle_event(_window, event);
 				}
+			}
+
+			// Add window transitions depending on states managed by individual windows
+			if (window->name == WindowNames::MAIN && window->get_window_signal() == WindowSignal::SHOW_ALGORITHM) {
+				auto cast_window = static_cast<PrimaryWindow*>(window);
+				Frontend::comparator->start = cast_window->start->get_input_text();
+				Frontend::comparator->end = cast_window->end->get_input_text();
+				Frontend::comparator->run();
+
+				auto result_window = static_cast<ResultWindow*>(this->_windows.find(name)->second);
+				delete result_window;
+
+				ResultWindow* new_window = new ResultWindow(*Frontend::comparator);
+				add_window(*new_window);
+
+				this->render_window(WindowNames::RESULTS);
+			} else if (window->name == WindowNames::RESULTS && window->get_window_signal() == WindowSignal::BACK) {
+				this->render_window(WindowNames::MAIN);
 			}
 
 			// Draw and display the window

@@ -102,6 +102,5 @@ public:
 			current_vis = a_star_vis;
 		}
 	}
-
 };
 #endif //RESULTWINDOW_H

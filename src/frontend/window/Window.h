@@ -58,7 +58,9 @@ public: // Everything below here is public facing and can be interacted with out
 	 * Gets the current state of the Window
 	 * @return WindowSignal
 	 */
-	WindowSignal get_window_signal();
+	WindowSignal get_window_signal() const {
+		return this->signal;
+	}
 };
 
 #endif //WINDOW_H
