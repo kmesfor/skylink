@@ -29,6 +29,8 @@ struct PrimaryWindow : public Window {
 	PrimaryWindow(AlgorithmComparator& comparator): comparator(comparator) {
 		this->name = WindowNames::MAIN;
 
+		this->edge_weight_type = WeightType::DELAY; 
+
 		start = new Textbox("Departure Airport Code", "e.g. MIA", {0, -70});
 		end = new Textbox("Destination Airport Code", "e.g. LAX", {0, -70});
 		num_results = new Textbox("Max Number of Results to Generate", "e.g. 10", {0, -70});
