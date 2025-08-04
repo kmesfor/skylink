@@ -9,6 +9,7 @@
 #include "backend/datamodels/AlgorithmResult.h"
 #include "window/windows/ResultWindow.h"
 #include "window/WindowManager.h"
+#include "window/windows/PrimaryWindow.h"
 
 sf::Font Frontend::font;
 
@@ -20,8 +21,11 @@ void Frontend::display(AlgorithmComparator& comparator, SkylinkGraph* graph) {
         return;
     }
 
+    PrimaryWindow primary_window(comparator);
+    wm.add_window(primary_window);
+
     ResultWindow result_window(comparator);
     wm.add_window(result_window);
 
-    wm.render_window(WindowNames::RESULTS);
+    wm.render_window(WindowNames::MAIN);
 }

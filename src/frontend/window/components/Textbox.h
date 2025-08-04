@@ -25,6 +25,7 @@ class Textbox {
 	sf::Color secondary = VisualizationConfig::COLOR_SECONDARY;
 
 	std::function<bool()> can_submit_func;
+	bool can_submit; //update this every time text is updated to allow button states to easily access
 
 	sf::Vector2f label_offset;
 
@@ -34,6 +35,7 @@ public:
 	Textbox(const std::string& label, const std::string& textbox_placeholder, const sf::Vector2f label_offset): label(Frontend::font, label), input(Frontend::font, textbox_placeholder) {
 		body = sf::RectangleShape();
 		this->is_clicked = false;
+		this->can_submit = false;
 
 		this->label_offset = label_offset;
 		this->textbox_placeholder = textbox_placeholder;
@@ -133,20 +135,22 @@ public:
 			// key pressed is a-z
 			if (key->code >= sf::Keyboard::Key::A && key->code <= sf::Keyboard::Key::Z) {
 				input_text += sf::Keyboard::getDescription(key->scancode);
+				can_submit = can_submit_func();
 			} else if (key->code == sf::Keyboard::Key::Backspace) {
 				if (input_text.getSize() != 0) {
 					input_text.erase(input_text.getSize() - 1);
+					can_submit = can_submit_func();
 				}
 			}
 		}
 	}
 
-	void set_can_submit(const std::function<bool()>& can_submit_func) {
+	void set_can_submit_func(const std::function<bool()>& can_submit_func) {
 		this->can_submit_func = can_submit_func;
 	}
 
-	bool can_submit() const {
-		return can_submit_func();
+	bool get_can_submit() const {
+		return can_submit;
 	}
 
 	std::string get_input_text() const {
