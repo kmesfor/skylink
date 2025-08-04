@@ -87,3 +87,6 @@ target_link_libraries(Skylink sfml-system sfml-window sfml-graphics)
 #include(CTest)
 #include(Catch)
 #catch_discover_tests(Tests) # must be named the same as your test executable
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_link_libraries(Skylink stdc++fs)
+endif()
