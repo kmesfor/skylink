@@ -7,7 +7,7 @@
 #include <string>
 
 #include "DataManager.h"
-#include "algorithms/AStar.h"
+// #include "algorithms/AStar.h"
 #include "algorithms/Dijkstra.h"
 #include "datamodels/AlgorithmResult.h"
 
@@ -43,16 +43,18 @@ struct AlgorithmComparator {
 		dijkstra.execute(num_results);
 		dijkstra_results = dijkstra.get_results();
 
-		AStar AStar(graph, start_airport, end_airport, weight_type);
-		AStar.execute(num_results);
-		a_star_results = AStar.get_results();
+		//TODO: Change this
+		// AStar AStar(graph, start_airport, end_airport, weight_type);
+		// AStar.execute(num_results);
+		// a_star_results = AStar.get_results();
+		a_star_results = dijkstra.get_results();
 	}
 
-	std::vector<AlgorithmResult> get_dijkstra_results() {
+	[[nodiscard]] std::vector<AlgorithmResult>& get_dijkstra_results() {
 		return dijkstra_results;
 	}
 
-	std::vector<AlgorithmResult> get_a_star_results() {
+	[[nodiscard]] std::vector<AlgorithmResult>& get_a_star_results() {
 		return a_star_results;
 	}
 
