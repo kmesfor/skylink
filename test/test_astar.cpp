@@ -13,45 +13,51 @@
 #include "algorithms/AStar.h"
 #include "algorithms/AlgorithmComparator.h"
 
-SkylinkGraph* make_graph_T2() {
-    // T2: A--5-->B--3-->C
-    auto* g = new SkylinkGraph();
-    // Create airports
-    g->airports = {"A","B","C"};
-    for (auto& code : g->airports) {
-        g->airport_lookup[code] = new Airport(code, code+" Name");
-        // set dummy lat/lon so heuristic compiles
-        g->airport_lookup[code]->lat = 0;
-        g->airport_lookup[code]->lon = 0;
-    }
-    // Create routes
-    // origin, dest, sched, actual, delay, cancelled, flights
-    auto* rAB = new AirportRoute("A","B", 5.0, 5.0, 0.0, 0, 1);
-    auto* rBC = new AirportRoute("B","C", 3.0, 3.0, 0.0, 0, 1);
-    g->airport_lookup["A"]->outgoing_routes.push_back(rAB);
-    g->airport_lookup["B"]->outgoing_routes.push_back(rBC);
-    return g;
-}
-
 TEST_CASE("AStar Test 1: Basic Test", "[backend]") {
 	REQUIRE(true);
 }
 
-void test_astar_T2() {
-    auto* g = make_graph_T2();
-    const Airport* A = g->airport_lookup["A"];
-    const Airport* C = g->airport_lookup["C"];
-	
-    std::unordered_map<AirportCode, GeoCoord> coords;
-    coords["A"] = {0,0};
-    coords["B"] = {0,0};
-    coords["C"] = {0,0};
+//each test cases creates a graph and runs A* on it, checking results
+TEST_CASE("AStar Test 2: Direct Path", "[backend]") {
+    auto* g = new SkylinkGraph();
+    g->airports = {"A", "B"};
+    for (auto& code : g->airports) {
+        g->airport_lookup[code] = new Airport(code, code + " Name");
+        g->airport_lookup[code]->lat = 0;
+        g->airport_lookup[code]->lon = 0;
+    }
+    auto* rXY = new AirportRoute("A", "B", 2.0, 2.0, 0.0, 0, 1);
+    g->airport_lookup["A"]->outgoing_routes.push_back(rXY);
 
-    AStar ast(g, A, C, WeightType::DISTANCE, coords);
+    std::unordered_map<AirportCode, GeoCoord> coords;
+    coords["A"] = {0, 0};
+    coords["B"] = {0, 0};
+
+    AStar ast(g, g->airport_lookup["X"], g->airport_lookup["Y"], WeightType::DISTANCE, coords);
     ast.execute(1);
     auto res = ast.get_results();
-    assert(res.size() == 1);
-    assert(!res[0].results.empty());
-    assert(total_cost(res[0]) == 8.0);
-    std::cout<<"A* T2 passed\n";
+
+    REQUIRE(res.size() == 1);
+    REQUIRE(total_cost(res[0]) == 2.0);
+}
+
+TEST_CASE("AStar Test 3: No Path Exists", "[backend]") {
+    auto* g = new SkylinkGraph();
+    g->airports = {"P", "Q"};
+    for (auto& code : g->airports) {
+        g->airport_lookup[code] = new Airport(code, code + " Name");
+        g->airport_lookup[code]->lat = 0;
+        g->airport_lookup[code]->lon = 0;
+    }
+    // No routes added
+
+    std::unordered_map<AirportCode, GeoCoord> coords;
+    coords["P"] = {0, 0};
+    coords["Q"] = {0, 0};
+
+    AStar ast(g, g->airport_lookup["P"], g->airport_lookup["Q"], WeightType::DISTANCE, coords);
+    ast.execute(1);
+    auto res = ast.get_results();
+    REQUIRE(res.size() == 1);
+    REQUIRE(res[0].results.empty()); // Checking that no path is there
 }
