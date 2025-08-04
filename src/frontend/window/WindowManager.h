@@ -71,19 +71,22 @@ public:
 
 			// Add window transitions depending on states managed by individual windows
 			if (window->name == WindowNames::MAIN && window->get_window_signal() == WindowSignal::SHOW_ALGORITHM) {
+				window->set_window_signal(WindowSignal::NONE);
 				auto cast_window = static_cast<PrimaryWindow*>(window);
 				Frontend::comparator->start = cast_window->start->get_input_text();
 				Frontend::comparator->end = cast_window->end->get_input_text();
 				Frontend::comparator->run();
 
-				auto result_window = static_cast<ResultWindow*>(this->_windows.find(name)->second);
+				auto result_window = static_cast<ResultWindow*>(this->_windows.find(WindowNames::RESULTS)->second);
 				delete result_window;
+				_windows.erase(WindowNames::RESULTS);
 
 				ResultWindow* new_window = new ResultWindow(*Frontend::comparator);
 				add_window(*new_window);
 
 				this->render_window(WindowNames::RESULTS);
 			} else if (window->name == WindowNames::RESULTS && window->get_window_signal() == WindowSignal::BACK) {
+				window->set_window_signal(WindowSignal::NONE);
 				this->render_window(WindowNames::MAIN);
 			}
 

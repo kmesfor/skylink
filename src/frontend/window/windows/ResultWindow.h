@@ -17,6 +17,7 @@ class ResultWindow : public Window {
 
 	Button* dijkstra_btn;
 	Button* a_star_btn;
+	Button* back_btn;
 
 	bool dijkstra_vis_showing;
 	GraphVisualization* current_vis;
@@ -29,6 +30,7 @@ public:
 
 		this->dijkstra_btn = new Button("View Dijkstra Results", Button::PRIMARY_INACTIVE);
 		this->a_star_btn = new Button("View A* Results", Button::PRIMARY_ACTIVE);
+		this->back_btn = new Button("Back", Button::SECONDARY_ACTIVE);
 
 		dijkstra_btn->set_size({150, 50});
 		dijkstra_btn->set_position({100, 100});
@@ -44,6 +46,13 @@ public:
 			toggle_visualization_state();
 		});
 
+		back_btn->set_size({150, 50});
+		back_btn->set_position({100, 500});
+		back_btn->set_text_size(12);
+		back_btn->set_click_action([this] () {
+			this->set_window_signal(WindowSignal::BACK);
+		});
+
 		this->dijkstra_vis_showing = true;
 		current_vis = dijkstra_vis;
 	}
@@ -53,6 +62,7 @@ public:
 		delete this->a_star_vis;
 		delete this->dijkstra_btn;
 		delete this->a_star_btn;
+		delete this->back_btn;
 	}
 
 	void draw(sf::RenderWindow& window) override {
@@ -61,6 +71,7 @@ public:
 		dijkstra_btn->draw(window);
 		a_star_btn->draw(window);
 		current_vis->draw(window, {200, 50});
+		back_btn->draw(window);
 	}
 
 	// Handle keyboard left, right, up, down clicks in reference to scrolling
@@ -86,6 +97,7 @@ public:
 
 			dijkstra_btn->handle_event(*event, window);
 			a_star_btn->handle_event(*event, window);
+			back_btn->handle_event(*event, window);
 		}
 	}
 
