@@ -3,6 +3,7 @@
 //
 #include <iostream>
 
+#include "AddAirportLocationData.h"
 #include "DeleteDisconnectedRoutes.h"
 #include "LoadAirportCodes.h"
 #include "LoadAirportRoutes.h"
@@ -10,6 +11,7 @@
 
 const std::string GRAPH_FILEPATH = "./data/generated/skylinkgraph.json";
 const std::string L_AIRPORT_FILEPATH = "./data/raw/L_AIRPORT.csv";
+const std::string GLOBAL_AIRPORT_DATABASE_FILEPATH = "./data/raw/long-lat.csv";
 
 // A list of T_ONTIME_REPORTING.csv files, each file covers a certain month/year,
 // including more of these files will help make the graph more accurate
@@ -55,6 +57,7 @@ const std::vector<std::string> T_ONTIME_REPORTING_FILEPATHS = {
 	"./data/raw/NOV_2022_T_ONTIME_REPORTING.csv",
 	"./data/raw/DEC_2022_T_ONTIME_REPORTING.csv",
 };
+
 /**
  * This is a part of a new executable named GenerateGraphFiles used to generate SkylinkGraph json files from
  * raw data (stored in dist/data/generated). Ideally, these scripts will only need to be run during development,
@@ -87,6 +90,9 @@ int main() {
 	// Delete any airport that has no incoming and no outgoing routes
 	std::cout << "Deleting disconnected airports" << std::endl;
 	DeleteDisconnectedRoutes(manager.graph);
+
+	std::cout << "Adding airport location data" << std::endl;
+	AddAirportLocationData(GLOBAL_AIRPORT_DATABASE_FILEPATH, manager.graph);
 
 	// std::cout << manager.graph->to_json();
 	std::cout << "Saving graph to: " << manager.path << std::endl;

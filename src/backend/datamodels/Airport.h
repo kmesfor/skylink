@@ -36,6 +36,8 @@ struct Airport {
 	std::string name;
 	int in_degree = 0;
 	int out_degree = 0;
+	float lat = 0;
+	float lon = 0;
 
 	// Maps an airport
 	std::vector<AirportRoute*> outgoing_routes;
@@ -52,6 +54,8 @@ struct Airport {
 		data["name"] = name;
 		data["in"] = in_degree;
 		data["out"] = out_degree;
+		data["lat"] = lat;
+		data["lon"] = lon;
 		data["outgoing_routes"] = json::array();
 		for (const auto& route : outgoing_routes) {
 			data["outgoing_routes"].push_back(route->to_json());
@@ -76,6 +80,8 @@ private:
 			airport->name = airport->name.substr(0, airport->name.find(':'));
 			airport->in_degree = data.at("in").get<int>();
 			airport->out_degree = data.at("out").get<int>();
+			airport->lat = data.at("lat").get<float>();
+			airport->lon = data.at("lon").get<float>();
 			for (const auto& route : data.at("outgoing_routes")) {
 				airport->outgoing_routes.emplace_back(AirportRoute::from_json(route));
 			}
@@ -86,6 +92,8 @@ private:
 			airport->name = "";
 			airport->in_degree = 0;
 			airport->out_degree = 0;
+			airport->lat = 0;
+			airport->lon = 0;
 		}
 
 		return airport;
