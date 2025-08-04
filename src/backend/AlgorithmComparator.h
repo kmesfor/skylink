@@ -43,7 +43,6 @@ struct AlgorithmComparator {
 		dijkstra.execute(num_results);
 		dijkstra_results = dijkstra.get_results();
 
-		//TODO: Change this
 		AStar AStar(graph, start_airport, end_airport, weight_type);
 		AStar.execute(num_results);
 		a_star_results = AStar.get_results();

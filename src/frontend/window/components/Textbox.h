@@ -29,6 +29,7 @@ class Textbox {
 	sf::Vector2f label_offset;
 
 	bool is_clicked; // state to check if that is the active textbox (multiple on screen)
+	bool is_hovered = false;
 public:
 	Textbox(const std::string& label, const std::string& textbox_placeholder, const sf::Vector2f label_offset): label(Frontend::font, label), input(Frontend::font, textbox_placeholder) {
 		body = sf::RectangleShape();
@@ -73,7 +74,7 @@ public:
 	}
 
 	void draw(sf::RenderWindow& window) {
-		if (is_clicked) {
+		if (is_clicked || is_hovered) {
 			body.setFillColor(primary);
 			input.setFillColor(secondary);
 		} else {
@@ -116,6 +117,12 @@ public:
 			} else {
 				set_is_clicked(false);
 			}
+		} else if (event.getIf<sf::Event::MouseMoved>()) {
+			if (is_in_bounds(window)) {
+				is_hovered = true;
+			} else {
+				is_hovered = false;
+			}
 		} else if (is_clicked) {
 			handle_typing(event);
 		}
@@ -140,6 +147,10 @@ public:
 
 	bool can_submit() const {
 		return can_submit_func();
+	}
+
+	std::string get_input_text() const {
+		return input_text;
 	}
 };
 
