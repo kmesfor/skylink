@@ -12,7 +12,7 @@
 
 sf::Font Frontend::font;
 
-void Frontend::display(std::vector<AlgorithmResult>& allResults, SkylinkGraph* graph) {
+void Frontend::display(AlgorithmComparator& comparator, SkylinkGraph* graph) {
     WindowManager wm;
 
     if (!font.openFromFile("JetBrainsMono-Regular.ttf")) { // Stored in dist/
@@ -20,7 +20,7 @@ void Frontend::display(std::vector<AlgorithmResult>& allResults, SkylinkGraph* g
         return;
     }
 
-    ResultWindow test_window(&allResults);
+    ResultWindow test_window(comparator);
     wm.add_window(test_window);
 
     wm.render_window(WindowNames::MAIN);

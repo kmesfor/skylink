@@ -5,13 +5,15 @@
 #ifndef FRONTEND_H
 #define FRONTEND_H
 #include <vector>
+
+#include "backend/AlgorithmComparator.h"
 #include "backend/datamodels/AlgorithmResult.h"
 #include "SFML/Graphics/Font.hpp"
 
 class Frontend {
 public:
 	static sf::Font font;
-	static void display(std::vector<AlgorithmResult>& results, SkylinkGraph* graph);
+	static void display(AlgorithmComparator& comparator, SkylinkGraph* graph);
 };
 
 

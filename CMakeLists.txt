@@ -37,7 +37,6 @@ add_executable(Skylink
         src/backend/algorithms/Dijkstra.h
         src/backend/DataManager.h
         src/backend/algorithms/Algorithm.h
-        src/backend/AlgorithmComparator.cpp
         src/backend/AlgorithmComparator.h
         src/frontend/frontend.cpp
         src/frontend/frontend.h

@@ -11,7 +11,6 @@
 constexpr float SCROLL_SPEED = 20; // px rate at which to scroll at
 
 class ResultWindow : public Window {
-	std::vector<AlgorithmResult>* results;
 	GraphVisualization* dijkstra_vis;
 	GraphVisualization* a_star_vis;
 
@@ -22,12 +21,10 @@ class ResultWindow : public Window {
 	GraphVisualization* current_vis;
 
 public:
-	explicit ResultWindow(std::vector<AlgorithmResult>* results) {
+	explicit ResultWindow(AlgorithmComparator& comparator) {
 		this->name = WindowNames::MAIN;
-		this->results = results;
-		this->dijkstra_vis = new GraphVisualization(*results);
-		//TODO: change this when A* is done
-		this->a_star_vis = new GraphVisualization(*results);
+		this->dijkstra_vis = new GraphVisualization(comparator.get_dijkstra_results());
+		this->a_star_vis = new GraphVisualization(comparator.get_a_star_results());
 
 		this->dijkstra_btn = new Button("View Dijkstra Results", Button::PRIMARY_INACTIVE);
 		this->a_star_btn = new Button("View A* Results", Button::PRIMARY_ACTIVE);

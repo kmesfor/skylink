@@ -13,21 +13,11 @@
 int main() {
 	DataManager parser("./data/generated/skylinkgraph.json");
 
-	Airport* start = parser.graph->airport_lookup["IAD"];
-	Airport* end = parser.graph->airport_lookup["GNV"];
+	std::string start = "IAD";
+	std::string end = "GNV";
+	WeightType type = WeightType::DELAY;
 
-	Dijkstra dijkstra(parser.graph, start, end, WeightType::DELAY);
-	dijkstra.execute(20);
+	AlgorithmComparator comparator(start, end, parser.graph, type, 5);
 
-	std::vector<AlgorithmResult> results = dijkstra.get_results();
-
-	//TODO: implement a state manager to communicate between the backend and frontend
-
-	for (int i = 0; i < results.size(); i++) {
-		std::cout << "RESULT " << i+1 << ":" << std::endl;
-		std::cout << "----------------------------------" << std::endl;
-		results[i].print();
-		std::cout << "----------------------------------" << std::endl;
-	}
-	Frontend::display(results, parser.graph);
+	Frontend::display(comparator, parser.graph);
 }
