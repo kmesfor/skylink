@@ -56,6 +56,11 @@ public:
 		set_position(body.getPosition());
 	}
 
+	void set_text(const std::string& text) {
+		this->text.setString(text);
+		this->set_size(body.getSize());
+	}
+
 	void set_position(const sf::Vector2f& position) {
 		body.setPosition(position);
 		text.setPosition(position);

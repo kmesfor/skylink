@@ -45,3 +45,9 @@ Resource Links (update as used):
 * https://stackoverflow.com/questions/14505571/centering-text-on-the-screen-with-sfml
 * https://data.opendatasoft.com/explore/dataset/airports-code%40public/export/?flg=en-us&refine.country_name=United+States
 * https://stackoverflow.com/questions/54681508/how-can-i-add-a-sort-of-text-box-in-sfml-using-keyboard-input-and-sftext-to-di
+* https://www.geeksforgeeks.org/dsa/a-search-algorithm/#
+* https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FGJ&QO_fu146_anzr=
+* https://www.geeksforgeeks.org/dsa/haversine-formula-to-find-distance-between-two-points-on-a-sphere/
+* https://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
+* https://cs.stackexchange.com/questions/71289/where-does-the-heuristic-come-from-in-the-a-star-algorithm-and-how-do-we-know-it
+* https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
