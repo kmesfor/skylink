@@ -47,7 +47,6 @@ struct AlgorithmComparator {
 		AStar AStar(graph, start_airport, end_airport, weight_type);
 		AStar.execute(num_results);
 		a_star_results = AStar.get_results();
-		a_star_results = dijkstra.get_results();
 	}
 
 	[[nodiscard]] std::vector<AlgorithmResult>& get_dijkstra_results() {

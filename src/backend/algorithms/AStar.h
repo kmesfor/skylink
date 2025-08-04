@@ -19,31 +19,21 @@
 #include "../datamodels/AirportRoute.h"
 
 
-
-struct GeoCoord {
-    double lat_deg;
-    double lon_deg;
-};
-
-
 class AStar final : public Algorithm {
 
 public:
-    AStar(const SkylinkGraph* graph,
-      const Airport* start,
-      const Airport* end,
-      const WeightType edge_weight_type,
-      const std::unordered_map<AirportCode, GeoCoord>& coords)
-    : Algorithm(graph, start, end, edge_weight_type),
-      coords_(coords) {}
+    AStar(SkylinkGraph* graph,
+    const Airport* start,
+    const Airport* end,
+      const WeightType edge_weight_type)
+    : Algorithm(graph, start, end, edge_weight_type) {}
 
     std::string get_algorithm_name() override {
         return "A*";
     }
 
 private:
-    const std:: unordered_map<AirportCode, GeoCoord>& coords_;
-    
+
     void run_algorithm(int n) override {
         // Clear the previous results when re-calculating a solution
         result_paths.clear();
@@ -85,21 +75,18 @@ private:
         return kEarthRadiusMiles * c;
     }
 
-    double heuristic(const Airport* a, const Airport* b) const {
-        auto itA = coords_.find(a->code);
-        auto itB = coords_.find(b->code);
-        if (itA == coords_.end() || itB == coords_.end()) {
-            return 0.0;
-        }
-        double miles = haversine_miles(itA->second.lat_deg, itA->second.lon_deg, 
-            itB->second.lat_deg, itB->second.lon_deg);
+    double heuristic(const Airport* a, const Airport* b) {
+        auto itA = graph->airport_lookup.at(a->code);
+        auto itB = graph->airport_lookup.at(b->code);
+
+        double miles = haversine_miles(itA->lat, itA->lon,
+            itB->lat, itB->lon);
         return miles / 10.0;
     }
 
     void perform_astar(std::set<const AirportRoute*>& removed_routes) {
         
         const size_t N = graph->airports.size();
-        const double INFINITY = std::numeric_limits<double>::infinity();
         
         // std::vector<double> dist(graph->airports.size(), INT_MAX);
 
