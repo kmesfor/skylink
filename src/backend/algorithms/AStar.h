@@ -1,6 +1,9 @@
 //resources:
 //https://www.geeksforgeeks.org/dsa/a-search-algorithm/
-//A* uses heuristic to find shortest path
+//A* uses heuristic function to find shortest path
+
+#ifndef ASTAR_H
+#define ASTAR_H
 
 #include <queue>
 #include <set>
@@ -11,9 +14,11 @@
 #include <algorithm>
 
 #include "Algorithm.h"
+#include "../datamodels/Airport.h"
+#include "../datamodels/SkylinkGraph.h"
+#include "../datamodels/AirportRoute.h"
 
-#ifndef ASTAR_H
-#define ASTAR_H
+
 
 struct GeoCoord {
     double lat_deg;
@@ -23,21 +28,21 @@ struct GeoCoord {
 
 class AStar final : public Algorithm {
 
-    public:
-    AStar(const SkylinkGraph* graph, 
-        const Airport* start, 
-        const Airport* end, 
-        const WeightType edge_weight_type) 
-        : Algorithm(graph, start, end, edge_weight_type),
-        coords_(coords) {}
+public:
+    AStar(const SkylinkGraph* graph,
+      const Airport* start,
+      const Airport* end,
+      const WeightType edge_weight_type,
+      const std::unordered_map<AirportCode, GeoCoord>& coords)
+    : Algorithm(graph, start, end, edge_weight_type),
+      coords_(coords) {}
 
     std::string get_algorithm_name() override {
         return "A*";
     }
 
-    private:
-
-        const std:: unordered_map<AirportCode, GeoCoord>& coords_;
+private:
+    const std:: unordered_map<AirportCode, GeoCoord>& coords_;
     
     void run_algorithm(int n) override {
         // Clear the previous results when re-calculating a solution
@@ -64,23 +69,10 @@ class AStar final : public Algorithm {
         }
     }
 
-    // double haversine(double lat1, double lon1, double lat2, double lon2) {
-    //     //helper function for the heuristic
-    //     //https://en.wikipedia.org/wiki/Haversine_formula
-    //     const double R = 3958.7613; // Radius of the Earth in miles
-    //     const double dLat = (lat2 - lat1) * M_PI / 180.0;
-    //     const double dLon = (lon2 - lon1) * M_PI / 180.0;
 
-    //     const double a = std::sin(dLat / 2) * std::sin(dLat / 2) +
-    //                      std::cos(lat1 * M_PI / 180.0) * std::cos(lat2 * M_PI / 180.0) *
-    //                      std::sin(dLon / 2) * std::sin(dLon / 2);
-    //     const double c = 2 * std::atan2(std::sqrt(a), std::sqrt(1 - a));
-
-    //     return R * c; // Distance in kilometers
-    // } 
     static double haversine_miles(double lat1, double lon1, double lat2, double lon2) {
         static constexpr double kEarthRadiusMiles = 3958.7613;
-        auto deg2rad = [](double d) { return d * M_PI / 180.0; };
+        auto deg2rad = [](double d) { return d * M_PI / 180.0; }; //deg to rad conversion needed bc the trig functions calculate in rads
 
         double phi1 = deg2rad(lat1);
         double phi2 = deg2rad(lat2);
@@ -93,30 +85,29 @@ class AStar final : public Algorithm {
         return kEarthRadiusMiles * c;
     }
 
-    double heuristic(const Airport* a, const Airport* b) {
-        auto itA = coords.find(a->code);
-        auto itG = coords.find(b->code);
-        if (itA == coords.end() || itB == coords.end()) {
+    double heuristic(const Airport* a, const Airport* b) const {
+        auto itA = coords_.find(a->code);
+        auto itB = coords_.find(b->code);
+        if (itA == coords_.end() || itB == coords_.end()) {
             return 0.0;
         }
         double miles = haversine_miles(itA->second.lat_deg, itA->second.lon_deg, 
-            itG->second.lat_deg, itG->second.lon_deg);
+            itB->second.lat_deg, itB->second.lon_deg);
         return miles / 10.0;
     }
-
-
 
     void perform_astar(std::set<const AirportRoute*>& removed_routes) {
         
         const size_t N = graph->airports.size();
         const double INFINITY = std::numeric_limits<double>::infinity();
         
-        std::vector<double> dist(graph->airports.size(), INT_MAX);
+        // std::vector<double> dist(graph->airports.size(), INT_MAX);
 
         std::vector<double> g_score(N, INFINITY);
         std::vector<const AirportRoute*> prev(N, nullptr);
 
         std::unordered_map<AirportCode, int> airport_code_to_index;
+
         airport_code_to_index.reserve(N);
         for (size_t i = 0; i < N; ++i) {
             airport_code_to_index[graph->airports[i]] = i;
@@ -127,28 +118,31 @@ class AStar final : public Algorithm {
         std::priority_queue<PQitem, std::vector<PQitem>, std::greater<>> open;
 
         int start_index = airport_code_to_index[start->code];
-        g[start_index] = 0.0;
-        double f_start = heuristic(start, end);
-        open.emplace(f_start, start);
+        g_score[start_index] = 0.0;
+        // double f_start = heuristic(start, end);
+        open.emplace(heuristic(start, end), start);
 
         while (!open.empty()){
-            double f_curr = open.top().first;
-            const Airport* curr = open.top().second;
+            auto [f_curr, curr] = open.top();
             open.pop();
-
+            // const Airport* curr = open.top().second;
             int curr_index = airport_code_to_index[curr->code];
-            double best_f_now = g[u_index] + heuristic(airport, end);
-            if (f > best_f_now) continue;
+            double curr_g = g_score[curr_index];
 
-            if (airport == end) {
+            double exp_f = curr_g + heuristic(curr, end);
+            if (f_curr > exp_f + 1e-9) {
+                continue; // Skipping if the estimated cost is worse than the current
+            }
+
+            if (curr == end) {
                 break;
             }
 
-            for (const auto& edge : current->outgoing_routes) {
+            for (const auto& edge : curr->outgoing_routes) {
                 if (removed_routes.count(edge) == 1) continue;
 
-                int neighbor_index = code_to_index[edge->destination_code];
-                double tentative_g = current_g + edge->calculate_weight(edge_weight_type);
+                int neighbor_index = airport_code_to_index[edge->destination_code];
+                double tentative_g = curr_g + edge->calculate_weight(edge_weight_type);
 
                 if (tentative_g + 1e-9 < g_score[neighbor_index]) {
                     g_score[neighbor_index] = tentative_g;
@@ -159,43 +153,45 @@ class AStar final : public Algorithm {
                     open.emplace(f_score, neighbor);
                 }
             }
-
         }
 
 
         // Reconstruct path
-		auto curr = end;
-		int curr_index = airport_code_to_index[curr->code];
 		std::vector<const AirportRoute*> path;
+		// int curr_index = airport_code_to_index[curr->code];
+		int end_index = airport_code_to_index[end->code];
 
 		// Make sure path is possible
-		if (prev[curr_index] != nullptr) {
+		if (prev[end_index] != nullptr) {
+            const Airport* node = end;
+            int node_index = end_index;
+
 			while (true) {
-				if (prev[curr_index] == nullptr) {
+				if (prev[node_index] == nullptr) {
 					// Path broken or no predecessor - exit or error
 					break;
 				}
 				// Add route parts until start is reached
-				path.push_back(prev[curr_index]);
-				if (curr == start) {
+				path.push_back(prev[node_index]);
+				if (node == start) {
 					break;
 				} else {
-					curr = graph->airport_lookup.at(prev[curr_index]->origin_code);
-					curr_index = airport_code_to_index[curr->code];
+					node = graph->airport_lookup.at(prev[node_index]->origin_code);
+					node_index = airport_code_to_index[node->code];
 				}
+            
 			}
-			// Reverse the list (built backwards)
-			std::reverse(path.begin(), path.end());
+
+            std::reverse(path.begin(), path.end());
 
         }
 
-			// Add this iteration of Dijkstra's results to a list of results for the overall algorithm
+			// Add this iteration of A*'s results to a list of results for the overall algorithm
 			result_paths.push_back(path);
-		}
 
-        
+    }
+
 };
-
 
 
 #endif //ASTAR_H
