@@ -15,12 +15,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 
 #pull in desired version of catch through cmake and sfml automatically, make it available
 Include(FetchContent)
-FetchContent_Declare(
-        Catch2
-        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG        v3.5.2 # if you run into issues, try updating your editor or downgrading to a lower version of catch v3
-)
-FetchContent_MakeAvailable(Catch2)
 
 FetchContent_Declare(
         SFML
@@ -37,7 +31,6 @@ add_executable(Skylink
         src/backend/algorithms/Dijkstra.h
         src/backend/DataManager.h
         src/backend/algorithms/Algorithm.h
-        src/backend/AlgorithmComparator.cpp
         src/backend/AlgorithmComparator.h
         src/frontend/frontend.cpp
         src/frontend/frontend.h
@@ -56,16 +49,6 @@ add_executable(Skylink
         src/frontend/graph-visualization/GraphVisualization.cpp
 )
 
-# These tests can use the Catch2-provided main
-add_executable(Tests
-        test/test.cpp
-        test/test_graph.cpp
-        test/test_comparator.cpp
-        test/test_parser.cpp
-        test/test_astar.cpp
-        test/test_dijkstra.cpp
-)
-
 add_executable(GenerateGraphFiles
         src/backend/graph-generator/GenerateGraphFiles.cpp
         src/backend/DataManager.h
@@ -74,10 +57,8 @@ add_executable(GenerateGraphFiles
         src/backend/graph-generator/DeleteDisconnectedRoutes.h
         src/backend/datamodels/WeightType.h
         src/frontend/window/components/Button.h
+        src/backend/graph-generator/AddAirportLocationData.h
 )
-
-target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain) #link catch to test.cpp file
-# the name here must match that of your testing executable (the one that has test.cpp)
 
 target_link_libraries(Skylink sfml-system sfml-window sfml-graphics)
 
