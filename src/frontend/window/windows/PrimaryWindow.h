@@ -29,7 +29,7 @@ struct PrimaryWindow : public Window {
 	PrimaryWindow(AlgorithmComparator& comparator): comparator(comparator) {
 		this->name = WindowNames::MAIN;
 
-		this->edge_weight_type = WeightType::DELAY; 
+		this->edge_weight_type = WeightType::DELAY;
 
 		start = new Textbox("Departure Airport Code", "e.g. MIA", {0, -70});
 		end = new Textbox("Destination Airport Code", "e.g. LAX", {0, -70});
