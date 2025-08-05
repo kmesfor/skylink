@@ -23,7 +23,20 @@ If copying the JSON file, ensure to move it to the correct location before runni
 If using the `GenerateGraphFiles` executable, place the executable in `${PROJECT_ROOT}/dist` and then execute. Make sure that you copy all the files in `${PROJECT_ROOT}/dist/data/raw` so the graph can be generated
 
 ### Step 2: Run Skylink
-Run the `Skylink` executable to view the program. Ensure CMake can fetch remote repositories (Catch2, SFML). If this becomes an issue or no internet connection is available, download the repositories and place them manually in the `dist/` folder
+Preferred Method: Run with CLion. Load the project into CLion and run with built in testing (most successful)
+
+Other options (may run into errors):
+- Run the `Skylink` executable to view the program. Ensure CMake can fetch remote repositories (Catch2, SFML). If this becomes an issue or no internet connection is available, download the repositories and place them manually in the `dist/` folder
+- Run with CMake `mkdir -p build && cd build && cmake .. && cmake --build . && cd ../dist && ./Skylink` -- this one-liner might work if CLion doesn't
+
+## Dependencies
+* C++17
+* CMake
+* Internet connection or SFML and Catch2 content downloaded
+
+## Troubleshooting
+
+To install SFML: `sudo apt install libsfml-dev` or equivalent
 
 ### Raw data information (internal documentation):
 * ORIGIN: Origin Airport
