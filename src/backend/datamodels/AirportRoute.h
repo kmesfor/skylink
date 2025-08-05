@@ -44,7 +44,11 @@ struct AirportRoute {
 
 	int num_flights = 0; // track number of flights used to consolidate data (needed for initial calculations)
 
+#ifdef TEST // Allow test cases to access private members
+public:
+#else
 private:
+#endif
 	/**
 	 * Create an AirportRoute from origin_code to destination_code. Lifecycle should be managed by DataManager.
 	 * @param origin_code Origin airport code

@@ -58,12 +58,19 @@ add_executable(Skylink
 
 # These tests can use the Catch2-provided main
 add_executable(Tests
-        test/test.cpp
-        test/test_graph.cpp
         test/test_comparator.cpp
-        test/test_parser.cpp
         test/test_astar.cpp
         test/test_dijkstra.cpp
+        src/backend/algorithms/AStar.h
+        src/backend/algorithms/Dijkstra.h
+        src/backend/DataManager.h
+        src/backend/algorithms/Algorithm.h
+        src/backend/AlgorithmComparator.h
+        src/backend/datamodels/Airport.h
+        src/backend/datamodels/AirportRoute.h
+        src/backend/datamodels/SkylinkGraph.h
+        src/backend/datamodels/AlgorithmResult.h
+        src/backend/datamodels/FlightRouteStatistics.h
 )
 
 add_executable(GenerateGraphFiles
@@ -80,6 +87,7 @@ add_executable(GenerateGraphFiles
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain) #link catch to test.cpp file
 # the name here must match that of your testing executable (the one that has test.cpp)
+target_compile_definitions(Tests PRIVATE TEST)
 
 target_link_libraries(Skylink sfml-system sfml-window sfml-graphics)
 

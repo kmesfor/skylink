@@ -23,7 +23,11 @@ using json = nlohmann::json;
 struct SkylinkGraph {
 	// Ensures that only DataManager can instantiate a SkylinkGraph, ensuring that SkylinkGraph's lifecycle is managed by DataManager
 	friend class DataManager;
+#ifdef TEST // Allow test cases to access private members
+public:
+#else
 private:
+#endif
 
 	/**
 	 * Constructor. Lifecycle should be managed by DataManager. Prevents instantiation from a public scope

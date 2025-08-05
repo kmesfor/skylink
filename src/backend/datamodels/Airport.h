@@ -63,7 +63,11 @@ struct Airport {
 
 		return data;
 	}
+#ifdef TEST // Allow test cases to access private members
+public:
+#else
 private:
+#endif
 	// Prevent public instantiation
 	Airport() = default;
 
