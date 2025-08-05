@@ -1,10 +1,31 @@
-TODO: update this page
+# **Skylink**
 
-Resources:
-* Switched from CORGIS database to BTS database (https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FGJ&QO_fu146_anzr=) because we need information on flight expected vs actual time, distance, cancelled, and specific flight paths
-* Also using a lookup table to convert airport codes into location information
+Skylink is an easy-to-use tool to help users plan the best airline routes based on over 23 million previous flights in the US.
+It computes over 200 million data points into an adjacency list graph structure that can be easily searched with Dijkstra's and A* algorithms.
 
-Raw data information (internal documentation):
+Skylink's UI is custom-built with SFML including custom components, graph interfaces, and more.
+Skylink has persistent data storage, fast processing, and intuitive UI to provide a high quality user experience
+
+<br>The full proposal can be found [here](https://docs.google.com/document/d/1c6Y-LKPQIOrkAKLpl_OfGjyv271B_L5RCtheeBo_95U/edit?tab=t.0).
+<br>The final report can be found [here](https://docs.google.com/document/d/1ihv4TOMAcxtyh2yAFkQxaejjZ8zbmFpi2Z_L_UES6eo/edit?tab=t.0).
+<br>The demo video can be found [here](https://www.youtube.com/watch?v=MLrn_zX0fxk).
+
+## **How to run**
+
+A copy of Skylink's generated graph JSON file necessary for execution can be downloaded at `${PROJECT_ROOT}/dist/data/generated/skylinkgraph.json`.
+<br>This file can also be regenerated using the `GenerateGraphFiles` executable.
+<br>All executables are available in `${PROJECT_ROOT}/dist` and available as a `release` on the GitHub release sidebar.
+
+### Step 1 Option 1: Copy JSON File
+If copying the JSON file, ensure to move it to the correct location before running `${PROJECT_ROOT}/dist/data/generated/skylinkgraph.json`
+
+### Step 1 Option 2: Generate JSON File
+If using the `GenerateGraphFiles` executable, place the executable in `${PROJECT_ROOT}/dist` and then execute. Make sure that you copy all the files in `${PROJECT_ROOT}/dist/data/raw` so the graph can be generated
+
+### Step 2: Run Skylink
+Run the `Skylink` executable to view the program. Ensure CMake can fetch remote repositories (Catch2, SFML). If this becomes an issue or no internet connection is available, download the repositories and place them manually in the `dist/` folder
+
+### Raw data information (internal documentation):
 * ORIGIN: Origin Airport
 * DEST: Destination Airport
 * ARR_DELAY: Difference in minutes between scheduled and actual arrival time. Early arrivals show negative numbers.
@@ -15,7 +36,8 @@ Raw data information (internal documentation):
 * AIR_TIME: Flight Time, in Minutes	
 * DISTANCE: Distance between airports (miles)
 
-Resource Links (update as used):
+### Extensive Resource Links: 
+A shortened version of this list with only major resources used can be found in the project report.
 * https://stackoverflow.com/questions/44990068/using-c-typedef-using-type-alias
 * https://github.com/nlohmann/json (download link: https://github.com/nlohmann/json/releases/tag/v3.12.0)
 * https://stackoverflow.com/questions/76489630/explanation-of-nodiscard-in-c17
