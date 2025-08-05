@@ -33,7 +33,7 @@ TEST_CASE("AStar Test 2: Direct Path", "[backend]") {
     coords["A"] = {0, 0};
     coords["B"] = {0, 0};
 
-    AStar ast(g, g->airport_lookup["X"], g->airport_lookup["Y"], WeightType::DISTANCE, coords);
+    AStar ast(g, g->airport_lookup["A"], g->airport_lookup["B"], WeightType::DISTANCE, coords);
     ast.execute(1);
     auto res = ast.get_results();
 
