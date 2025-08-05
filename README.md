@@ -51,3 +51,5 @@ Resource Links (update as used):
 * https://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
 * https://cs.stackexchange.com/questions/71289/where-does-the-heuristic-come-from-in-the-a-star-algorithm-and-how-do-we-know-it
 * https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+* https://github.com/catchorg/Catch2
+
