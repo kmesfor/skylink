@@ -19,9 +19,11 @@
 #include "../datamodels/AirportRoute.h"
 
 
+//A* search implementation, finds fastest route between two airports based on actual cost and heuristic estimate
 class AStar final : public Algorithm {
 
 public:
+    //constructor to initialize and extend the Algorithm class, with graph, starting and ending airports, and edge weight type
     AStar(SkylinkGraph* graph,
     const Airport* start,
     const Airport* end,
@@ -59,7 +61,7 @@ private:
         }
     }
 
-
+    //calculates the "great-circle" distance between two latititude and longitude poiints in miles
     static double haversine_miles(double lat1, double lon1, double lat2, double lon2) {
         static constexpr double kEarthRadiusMiles = 3958.7613;
         auto deg2rad = [](double d) { return d * M_PI / 180.0; }; //deg to rad conversion needed bc the trig functions calculate in rads
@@ -75,6 +77,7 @@ private:
         return kEarthRadiusMiles * c;
     }
 
+    //Heuristic function serves as an estimate of remaining travel time in minutes. we assume that the average speed of a flight is 600 miles per hour, so we divide the distance by 10 to get the time in minutes
     double heuristic(const Airport* a, const Airport* b) {
         auto itA = graph->airport_lookup.at(a->code);
         auto itB = graph->airport_lookup.at(b->code);
@@ -84,12 +87,15 @@ private:
         return miles / 10.0;
     }
 
+    //This is the main A* search. maintains g_score and an open set, which is the min heap of f = g + h. 
+    //removed_routes contains edges to ingore
     void perform_astar(std::set<const AirportRoute*>& removed_routes) {
         
         const size_t N = graph->airports.size();
         
         // std::vector<double> dist(graph->airports.size(), INT_MAX);
 
+        //best known cost from start to each airport
         std::vector<double> g_score(N, INFINITY);
         std::vector<const AirportRoute*> prev(N, nullptr);
 
@@ -104,6 +110,7 @@ private:
         using PQitem = std::pair<double, const Airport*>;
         std::priority_queue<PQitem, std::vector<PQitem>, std::greater<>> open;
 
+        //initializing start node
         int start_index = airport_code_to_index[start->code];
         g_score[start_index] = 0.0;
         // double f_start = heuristic(start, end);
@@ -125,12 +132,14 @@ private:
                 break;
             }
 
+            //checking each outgoing route from current airport to find lower cost paths
             for (const auto& edge : curr->outgoing_routes) {
                 if (removed_routes.count(edge) == 1) continue;
 
                 int neighbor_index = airport_code_to_index[edge->destination_code];
                 double tentative_g = curr_g + edge->calculate_weight(edge_weight_type);
 
+                //if the algo finds a better path, it updates
                 if (tentative_g + 1e-9 < g_score[neighbor_index]) {
                     g_score[neighbor_index] = tentative_g;
                     prev[neighbor_index] = edge;
@@ -143,7 +152,7 @@ private:
         }
 
 
-        // Reconstruct path
+        // Reconstruct path from the end back to the start if its reachable
 		std::vector<const AirportRoute*> path;
 		// int curr_index = airport_code_to_index[curr->code];
 		int end_index = airport_code_to_index[end->code];
