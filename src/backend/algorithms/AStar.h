@@ -37,7 +37,7 @@ private:
     void run_algorithm(int n) override {
         // Clear the previous results when re-calculating a solution
         result_paths.clear();
-
+  
         // If the path is not a real path, return nothing (should be prevented by frontend)
         if (end == start) return;
 
