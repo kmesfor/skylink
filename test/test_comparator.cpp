@@ -3,7 +3,7 @@
 //
 
 #include <catch2/catch_test_macros.hpp>
-#include "algorithms/AlgorithmComparator.h"
+#include "AlgorithmComparator.h"
 #include "datamodels/SkylinkGraph.h"
 #include "datamodels/Airport.h"
 #include "datamodels/AirportRoute.h"

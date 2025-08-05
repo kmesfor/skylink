@@ -11,7 +11,7 @@
 #include "datamodels/AirportRoute.h"
 #include "algorithms/Dijkstra.h"
 #include "algorithms/AStar.h"
-#include "algorithms/AlgorithmComparator.h"
+#include "AlgorithmComparator.h"
 
 TEST_CASE("AStar Test 1: Basic Test", "[backend]") {
 	REQUIRE(true);
