@@ -11,19 +11,30 @@
 
 constexpr float SCROLL_SPEED = 20; // px rate at which to scroll at
 
+/**
+ * The window to show when the user runs a search
+ */
 class ResultWindow : public Window {
+	// Individual graph visualization instances for easy toggle
 	GraphVisualization* dijkstra_vis;
 	GraphVisualization* a_star_vis;
 
+	// 3 side buttns
 	Button* dijkstra_btn;
 	Button* a_star_btn;
 	Button* back_btn;
 
+	// State for which visualization is being displayed
 	bool dijkstra_vis_showing;
 	GraphVisualization* current_vis;
 
 public:
+	/**
+	 * Instantiate a ResultWindow. Reinstantiate new object when changing inputs
+	 * @param comparator AlgorithmComparator data pipeline
+	 */
 	explicit ResultWindow(AlgorithmComparator& comparator) {
+		// Initial component configuration and setup
 		this->name = WindowNames::RESULTS;
 		this->dijkstra_vis = new GraphVisualization(comparator.get_dijkstra_results());
 		this->a_star_vis = new GraphVisualization(comparator.get_a_star_results());
@@ -32,6 +43,7 @@ public:
 		this->a_star_btn = new Button("View A* Results", Button::PRIMARY_ACTIVE);
 		this->back_btn = new Button("Back", Button::SECONDARY_ACTIVE);
 
+		// Initial component configuration (not needed on draw)
 		dijkstra_btn->set_size({150, 50});
 		dijkstra_btn->set_position({100, 100});
 		dijkstra_btn->set_text_size(12);
@@ -39,6 +51,7 @@ public:
 			toggle_visualization_state();
 		});
 
+		// Initial component configuration (not needed on draw)
 		a_star_btn->set_size({150, 50});
 		a_star_btn->set_position({100, 300});
 		a_star_btn->set_text_size(12);
@@ -46,6 +59,7 @@ public:
 			toggle_visualization_state();
 		});
 
+		// Initial component configuration (not needed on draw)
 		back_btn->set_size({150, 50});
 		back_btn->set_position({100, 500});
 		back_btn->set_text_size(12);
@@ -57,6 +71,9 @@ public:
 		current_vis = dijkstra_vis;
 	}
 
+	/**
+	 * Cleans up window when no longer being used
+	 */
 	~ResultWindow() override {
 		delete this->dijkstra_vis;
 		delete this->a_star_vis;
@@ -65,6 +82,10 @@ public:
 		delete this->back_btn;
 	}
 
+	/**
+	 * Draws components to screen
+	 * @param window RenderWindow to draw components on
+	 */
 	void draw(sf::RenderWindow& window) override {
 		window.clear(VisualizationConfig::COLOR_BG);
 
@@ -95,12 +116,16 @@ public:
 				current_vis->check_if_vertex_clicked(window);
 			}
 
+			// Dispatch event to component handlers
 			dijkstra_btn->handle_event(*event, window);
 			a_star_btn->handle_event(*event, window);
 			back_btn->handle_event(*event, window);
 		}
 	}
 
+	/**
+	 * Toggles between displaying the dijkstra and A* visualization
+	 */
 	void toggle_visualization_state() {
 		this->dijkstra_vis_showing = !this->dijkstra_vis_showing;
 

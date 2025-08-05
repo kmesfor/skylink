@@ -11,7 +11,9 @@
 #include "backend/datamodels/AlgorithmResult.h"
 
 int main() {
+	// Load data
 	DataManager parser("./data/generated/skylinkgraph.json");
 
+	// Display frontend
 	Frontend::display(parser.graph);
 }

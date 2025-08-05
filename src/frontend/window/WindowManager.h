@@ -70,15 +70,21 @@ public:
 			}
 
 			// Add window transitions depending on states managed by individual windows
+			// State for moving to the show algorithm state
 			if (window->name == WindowNames::MAIN && window->get_window_signal() == WindowSignal::SHOW_ALGORITHM) {
-				window->set_window_signal(WindowSignal::NONE);
-				auto cast_window = dynamic_cast<PrimaryWindow*>(window);
+				window->set_window_signal(WindowSignal::NONE); //reset window signal
+				auto cast_window = dynamic_cast<PrimaryWindow*>(window); // get the primary window
+
+				// Pass data from primary window to the AlgorithmComparator
 				Frontend::comparator->start = cast_window->start->get_input_text();
 				Frontend::comparator->end = cast_window->end->get_input_text();
 				Frontend::comparator->num_results = stoi(cast_window->num_results->get_input_text());
 				Frontend::comparator->weight_type = cast_window->edge_weight_type;
+
+				// Run comparison
 				Frontend::comparator->run();
 
+				// Remake result window with updated results
 				auto result_window = dynamic_cast<ResultWindow*>(this->_windows.find(WindowNames::RESULTS)->second);
 				delete result_window;
 				_windows.erase(WindowNames::RESULTS);
@@ -86,7 +92,10 @@ public:
 				auto* new_window = new ResultWindow(*Frontend::comparator);
 				add_window(*new_window);
 
+				// Show newly made window
 				this->render_window(WindowNames::RESULTS);
+
+			// Moving from results window to main window
 			} else if (window->name == WindowNames::RESULTS && window->get_window_signal() == WindowSignal::BACK) {
 				window->set_window_signal(WindowSignal::NONE);
 				this->render_window(WindowNames::MAIN);
