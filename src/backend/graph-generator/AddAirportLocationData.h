@@ -41,7 +41,7 @@ inline void AddAirportLocationData(const std::string& path, SkylinkGraph* graph)
 
 		int col_index = 1; // only grab the columns we want
 		bool invalid_airport = false; // logic control to break out of loop quickly
-		// Delim by colon
+		// Delim by colon, select only the data that we need
 		while (std::getline(stream, value, ';')) {
 			if (col_index == 1) {
 				iata_code = value;
@@ -53,16 +53,18 @@ inline void AddAirportLocationData(const std::string& path, SkylinkGraph* graph)
 				lat_decimal_degrees = value;
 			} else if (col_index == 7) {
 				long_decimal_degrees = value;
+				// last value that we need, break
 				break;
 			}
 			col_index++;
 		}
 
-		// Break out of larger loop iteration
+		// Break out of larger loop iteration if the airport doesnt exist in our graph
 		if (invalid_airport) {
 			continue;
 		}
 
+		// Store latitude and longitude
 		graph->airport_lookup[iata_code]->lat = std::stof(lat_decimal_degrees);
 		graph->airport_lookup[iata_code]->lon = std::stof(long_decimal_degrees);
 	}

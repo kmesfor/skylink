@@ -6,6 +6,9 @@
 #define VISUALIZATIONCONFIG_H
 #include "SFML/Graphics/Color.hpp"
 
+/**
+ * Constant values used for primarily for configuring the GraphVisualization. Some of these values are used in frontend components as well
+ */
 namespace VisualizationConfig {
 	constexpr sf::Color COLOR_PRIMARY = sf::Color(91, 104, 169);
 	constexpr sf::Color COLOR_SECONDARY = sf::Color(176, 185, 232);

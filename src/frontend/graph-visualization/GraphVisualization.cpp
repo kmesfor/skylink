@@ -163,6 +163,7 @@ void GraphVisualization::load_vertex_positions() {
 	}
 }
 
+// Text summary of algorithm results to show on the screen
 void GraphVisualization::draw_result_info(sf::RenderWindow& window, sf::Vector2f position) const {
 	auto result = std::get<2>(vertices[clicked_vertex_index]);
 
@@ -170,6 +171,9 @@ void GraphVisualization::draw_result_info(sf::RenderWindow& window, sf::Vector2f
 	auto overall_stats = result->get_overall_statistics();
 	overall_info.setFont(Frontend::font);
 
+	// Right-oriented summary page
+
+	// Configure format of text
 	std::ostringstream str;
 	str << std::fixed << std::setprecision(5);
 	str << "Summary: " << result->start->name << " (" << result->start->code << ")" << " to " << result->end->name << " (" << result->end->code << ")\n\n";
@@ -184,7 +188,7 @@ void GraphVisualization::draw_result_info(sf::RenderWindow& window, sf::Vector2f
 
 	overall_info.setString(str.str());
 
-
+	// Configure format of component
 	overall_info.setCharacterSize(STATS_SUMMARY_FONT_SIZE);
 	overall_info.setFillColor(STATS_SUMMARY_COLOR);
 	overall_info.setPosition({position.x + STATS_X, position.y + STATS_Y});
@@ -192,6 +196,8 @@ void GraphVisualization::draw_result_info(sf::RenderWindow& window, sf::Vector2f
 
 	FlightRouteStatistics connection = std::get<1>(vertices[clicked_vertex_index]);
 
+	// Left-oriented route-specific info
+	// Configure format of component
 	sf::Text info(Frontend::font);
 	info.setFont(Frontend::font);
 	info.setString("\n" + connection.to_string());

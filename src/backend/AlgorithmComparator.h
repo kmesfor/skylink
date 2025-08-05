@@ -12,6 +12,9 @@
 #include "datamodels/AlgorithmResult.h"
 
 
+/**
+ * Structure to facilitate running algorithms, comparing their results, and supplying data to the frontend
+ */
 struct AlgorithmComparator {
 	std::string start;
 	std::string end;
@@ -22,6 +25,15 @@ struct AlgorithmComparator {
 	std::vector<AlgorithmResult> dijkstra_results;
 	std::vector<AlgorithmResult> a_star_results;
 
+
+	/**
+	 * Create an AlgorithmComparator instance.
+	 * @param start airport code of start airport
+	 * @param end airport code of end airport
+	 * @param graph pointer to Skylink graph
+	 * @param weight_type WeightType to use for calculations
+	 * @param num_results the number of results to populate
+	 */
 	AlgorithmComparator(const std::string& start, const std::string& end, SkylinkGraph* graph, const WeightType weight_type, const int num_results) {
 		this->start = start;
 		this->end = end;
@@ -31,7 +43,7 @@ struct AlgorithmComparator {
 	}
 
 	/**
-	 * Run algorithms and store results. Automatically run by constructor
+	 * Run algorithms and store results. Pass to frontend for data access
 	 */
 	void run() {
 		const Airport* start_airport = graph->airport_lookup[start];
@@ -47,17 +59,22 @@ struct AlgorithmComparator {
 		a_star_results = AStar.get_results();
 	}
 
+	/**
+	 * Gets the results of Dijkstra's algorithm
+	 * @return vector of AlgorithmResult objects
+	 */
 	[[nodiscard]] std::vector<AlgorithmResult>& get_dijkstra_results() {
 		return dijkstra_results;
 	}
 
+	/**
+	 * Gets the results of A* algorithm
+	 * @return vector of AlgorithmResult objects
+
+	 */
 	[[nodiscard]] std::vector<AlgorithmResult>& get_a_star_results() {
 		return a_star_results;
 	}
-
-
-
-
 };
 
 
